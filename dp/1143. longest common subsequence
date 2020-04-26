@@ -1,0 +1,22 @@
+
+//更加节约空间复杂度的dp，用k^1来每次改变k
+//for循环每次循环一次之后都会先执行i++, k ^= 1再去判断是否满足中间的条件
+
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length(), n = text2.length();
+        if(m < n) return longestCommonSubsequence(text2, text1);
+        int[][] dp = new int[2][n + 1];
+        int k = 1;
+        for(int i = 0; i < m; i++, k ^= 1) {
+            for(int j = 0; j < n; j++) {
+                if(text1.charAt(i) == text2.charAt(j)) {
+                    dp[k][j + 1] = dp[k ^ 1][j] + 1;
+                } else {
+                    dp[k][j + 1] = Math.max(dp[k][j], dp[k ^ 1][j + 1]);
+                }
+            }
+        }
+        return dp[k ^ 1][n];
+    }
+}
