@@ -1,0 +1,17 @@
+1. map.putIfAbsent(K key, V value) :
+Return Value: This method returns null (if there was no mapping with the provided key 
+before or it was mapped to a null value) or previous value associated with provided key.
+返回：如果有这个key 返回它对应的value 如果没有 返回null
+
+2. map.computeIfAbsent(Key, Function) :
+Returns: This method returns current (existing or computed) value associated with the 
+specified key, or null if mapping returns null.
+
+map.computeIfAbsent(arr[i], k->new ArrayList<>()).add(i):
+返回：如果有这个key 返回它对应的value 如果没有 返回新建的value
+Return Value: This method returns null (if there was no mapping with the provided key before or it was mapped to a null 
+value) or previous value associated with provided key.
+
+3. getOrDefault(Object key, V defaultValue):
+Return Value: This method returns value mapped with the specified key, otherwise default value is returned.
+返回：如果有这个key 返回它对应的value 如果没有 返回default value 但没有给这个key存储新的value
