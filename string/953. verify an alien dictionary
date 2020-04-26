@@ -1,0 +1,25 @@
+//比较暴力的方法 每两个比 每两个的每一位比
+//值得学习的是 int[] map
+//和对于前缀相同的处理 
+//bigger函数写得很好 很简洁 需要学习！
+class Solution {
+    public boolean isAlienSorted(String[] words, String order) {
+        int[] map = new int[26];
+        for(int i = 0; i < 26; i++) map[order.charAt(i) - 'a'] = i;
+        for(int i = 1; i < words.length; i++) {
+            if(bigger(words[i - 1], words[i], map) > 0) return false;
+        }
+        return true;
+    }
+    
+    public int bigger(String first, String second, int[] map) {
+        int m = first.length(), n = second.length();
+        for(int i = 0; i < Math.min(m, n); i++) {
+            int pos1 = map[first.charAt(i) - 'a'];
+            int pos2 = map[second.charAt(i) - 'a'];
+            
+            if(pos1 != pos2) return pos1 - pos2;
+        }
+        return m - n;
+    }
+}
