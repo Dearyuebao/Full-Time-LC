@@ -1,0 +1,38 @@
+//dfs 遇到count不平衡的时候开始for循环 每一个for循环里找到符合条件的开始dfs
+//注意重新开始dfs的时候s改变了 所以重新开始的index也会有变化 要注意
+//每次修改s到结尾的时候还要反过来验证一遍 或者去除多余的positive bracket
+//要注意的地方很多 这个代码写的非常简洁 要多看看
+
+class Solution {
+    public List<String> removeInvalidParentheses(String s) {
+        List<String> res = new ArrayList<>();
+        char[] check = new char[]{'(', ')'};
+        dfs(s, res, 0, 0, check);
+        return res;
+    }
+    
+    public void dfs(String s, List<String> res, int last_i, int last_j, char[] check) {
+        int count = 0;
+        while(count >= 0 && last_i < s.length()) {
+            if(s.charAt(last_i) == check[0]) count++;
+            else if(s.charAt(last_i) == check[1]) count--;
+            last_i++;
+        }
+        
+        if(count >= 0) {
+            String reversed = new StringBuilder(s).reverse().toString();
+            if(check[0] == '(') dfs(reversed, res, 0, 0, new char[]{')','('});
+            else res.add(reversed);
+        }
+        
+        else {
+            for(int i = last_j; i <= last_i - 1; i++) {
+                if(s.charAt(i) == check[1] && (i == last_j || s.charAt(i - 1) != check[1])) {
+                    dfs(s.substring(0, i) + s.substring(i + 1), res, last_i - 1, i, check);
+                }
+            }
+        }
+    }
+}
+
+
