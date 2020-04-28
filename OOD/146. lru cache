@@ -1,0 +1,93 @@
+//就是保持一个顺序 执行不同操作的时候调整顺序
+//由于表面操作只是操作integer,保持的dlinkednode顺序每个元素有四个信息
+//所以需要map把表面操作的integer和dlinkednode联系起来
+//和first unique queue number那道题很像
+//真正懂了之后发现并不难写
+//从刷题以来 我写了不下十遍lru 之前并没有真的懂 每隔一段时间再来看还是不会
+//现在终于懂了
+
+class LRUCache {
+    class DLinkedNode{
+        int key;
+        int val;
+        DLinkedNode pre;
+        DLinkedNode post;
+    }
+    
+    int capacity;
+    int count = 0;
+    Map<Integer, DLinkedNode> map = new HashMap<>();
+    DLinkedNode head = new DLinkedNode();
+    DLinkedNode tail = new DLinkedNode();
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        head.pre = null;
+        head.post = tail;
+        tail.pre = head;
+        tail.post = null;
+    }
+    
+    public int get(int key) {
+        if(this.map.containsKey(key)) {
+            moveToHead(this.map.get(key));
+           
+            return this.map.get(key).val;
+        }
+        return -1;
+    }
+    
+    public void put(int key, int val) {
+        if(map.containsKey(key)) {
+            this.map.get(key).val = val;
+            moveToHead(map.get(key));
+        } else {
+            DLinkedNode node = new DLinkedNode();
+            node.key = key;
+            node.val = val;
+            DLinkedNode one = head;
+            DLinkedNode two = head.post;
+            node.pre = one;
+            node.post = two;
+            one.post = node;
+            two.pre = node;
+            
+            this.map.put(key, node);
+            count++;
+            if(count > capacity) {
+                
+                DLinkedNode preNode = tail.pre;
+                DLinkedNode first = preNode.pre;
+                DLinkedNode second = preNode.post;
+                this.map.remove(preNode.key);
+                first.post = second;
+                second.pre = first;
+          
+                count--;
+               
+            }
+        }
+    }
+    
+    public void moveToHead(DLinkedNode node) {
+        node.pre.post = node.post;
+        node.post.pre = node.pre;
+        DLinkedNode next = head.post;
+        next.pre = node;
+        node.post = next;
+        head.post = node;
+        node.pre = head; 
+    }
+    
+}
+    
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+//the hard point is: using what to trace the least used in the hashmap?
+//queue?
+//when we get/put one elment, it means we use it recently, so if the queue contains this key already, we have to remove it and add it to the tail of the queue. each time the size of hashmap is larger than capacity, we remove the head of queue.
+//from what has been discussed above, queue is not convenient to remove, so we need other data structure
