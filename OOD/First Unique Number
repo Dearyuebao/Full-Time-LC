@@ -1,0 +1,77 @@
+//keep一个list里面都是unique number,并需要保持他们的顺序
+//想到了lru cache那道题
+//我的做法如下
+//没有找到这道题的discussion
+
+class FirstUnique {
+    
+    class DLinkedNode {
+        int key;
+        int val;
+        DLinkedNode pre;
+        DLinkedNode post;
+    }
+    
+    DLinkedNode head = new DLinkedNode();
+    DLinkedNode tail = new DLinkedNode();
+    Map<Integer, DLinkedNode> map = new HashMap<>();
+    
+    public FirstUnique(int[] nums) {
+        this.head.pre = null;
+        this.head.post = tail;
+        this.tail.pre = head;
+        this.tail.post = null;
+        for(int each: nums) {
+            if(map.containsKey(each)) {
+                if(map.get(each).val == 1) removeNode(each);
+                map.get(each).val += 1;
+            }
+            else {
+                addNode(each);
+            }
+        }
+        
+    }
+    
+    public void removeNode(int each) {
+        DLinkedNode node = map.get(each);
+        DLinkedNode prenode = node.pre;
+        DLinkedNode postnode = node.post;
+        prenode.post = postnode;
+        postnode.pre = prenode;
+    }
+    
+    public void addNode(int each) {
+        DLinkedNode node = new DLinkedNode();
+        node.key = each;
+        node.val = 1;
+        DLinkedNode prenode = this.tail.pre;
+        prenode.post = node;
+        node.pre = prenode;
+        node.post = tail;
+        tail.pre = node;
+        map.put(each, node);
+    }
+    
+    public int showFirstUnique() {
+        if(head.post == tail) return -1;
+        return this.head.post.key;
+    }
+    
+    public void add(int value) {
+        if(map.containsKey(value)) {
+            if(map.get(value).val == 1) removeNode(value);
+            map.get(value).val += 1;
+        }
+        else {
+            addNode(value);
+        }
+    }
+}
+
+/**
+ * Your FirstUnique object will be instantiated and called as such:
+ * FirstUnique obj = new FirstUnique(nums);
+ * int param_1 = obj.showFirstUnique();
+ * obj.add(value);
+ */
