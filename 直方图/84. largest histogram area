@@ -1,0 +1,62 @@
+
+//我比较喜欢第一种解法 写起来简单 
+//时间复杂度高但是代码简单的做法
+//核心思想 以每一个点作为右边界，计算它和前面每个点为左边界构成的长方形
+//可以剪枝 如果某个点arr[index] < arr[index + 1]那么由当前点作为右边界的一定不会是面积最大值
+
+//如何计算以某一点为右边界 以某一点为左边界构成的矩形面积
+//找到这两个点之间的最小值 作为矩形的高度，从右边界向左移动的时候 不断更新min
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int max = 0;
+        for(int i = 0; i < heights.length; i++) {
+            if(i == heights.length - 1 || heights[i] > heights[i + 1]) {
+                int min = heights[i];
+                for(int j = i; j >= 0; j--) {
+                    min = Math.min(min, heights[j]);
+                    max = Math.max(max, min * (i - j + 1));
+                }
+            }
+        }
+        return max;
+    }
+}
+
+
+//还有一个思路和写法比较复杂 但是时间复杂度低的算法
+//以每一个arr[index]作为最高点 向两边找左右边界
+//keep一个非严格单调递增的stack 当遇到比栈顶元素小的（右边界） 就把栈顶元素pop出来 再栈的peek就是左边界
+//stack里面存储的是index
+
+//有很多注意事项
+//1. 当从stack里面pop出来一个元素之后 记得把i - 1 就是下一轮移走一个元素之后重新判断arr[i]能不能被放入stack
+//2. 如果stack空了的话 当前index要放入stack里 这个index对应的arr[index]就是在所有index之前的数都小于它
+//3. 如果到了最后一个元素 退出了for循环，还要继续循环stack直到把所有元素都用作最高点一次
+//stack里存的是index 取高度时候取arr[index]！！！总是忘记 有typo
+        int max = 0;
+        if(heights.length == 0) return 0;
+        Stack<Integer> stack = new Stack<>();
+        for(int i = 0; i < heights.length; i++) {
+            if(stack.isEmpty()) stack.push(i);
+            else {
+                if(heights[i] >= heights[stack.peek()]) {
+                    stack.push(i);
+                } else {
+                    int height = heights[stack.pop()];
+                    int left = stack.isEmpty()? -1:stack.peek();
+                    int right = i;
+                    max = Math.max(max, height * (right - left - 1));
+                    i--;
+                }
+            }
+            
+        }
+        int r = stack.peek() + 1;
+        while(!stack.isEmpty()) {
+            int h = heights[stack.pop()];
+            int l = stack.isEmpty()? -1:stack.peek();
+            max = Math.max(max, h * (r - l - 1));
+        }
+        return max;
+    }
