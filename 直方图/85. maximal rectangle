@@ -1,0 +1,48 @@
+//用84题的思路 把每一行变成直方图
+
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        if(matrix.length == 0) return 0;
+        if(matrix[0].length == 0) return 0;
+        int max = 0;
+        int m = matrix.length, n = matrix[0].length;
+        int[] height = new int[n];
+        for(int i = 0; i < m;i++) {
+            for(int j = 0; j < n; j++) {
+                if(matrix[i][j] == '1') height[j] += 1;
+                else height[j] = 0;
+            }
+            max = Math.max(max, largestRectangular(height));
+        }
+        return max;
+        
+    }
+    
+    public int largestRectangular(int[] heights) {
+        int max = 0;
+        Stack<Integer> stack = new Stack<>();
+        for(int i = 0; i < heights.length; i++) {
+            if(stack.isEmpty()) stack.push(i);
+            else {
+                if(heights[i] >= heights[stack.peek()]) {
+                    stack.push(i);
+                } else {
+                    int height = heights[stack.pop()];
+                    int right = i;
+                    int left = stack.isEmpty()? -1:stack.peek();
+                    max = Math.max(max, height * (right - left - 1));
+                    i--;
+                }
+            }
+        }
+        int r = stack.peek() + 1;
+        while(!stack.isEmpty()) {
+            int h = heights[stack.pop()];
+            int l = stack.isEmpty()? -1:stack.peek();
+            max = Math.max(max, h * (r - l - 1));
+        }
+        return max;
+    }
+    
+   
+}
