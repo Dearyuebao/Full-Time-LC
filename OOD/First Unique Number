@@ -79,6 +79,7 @@ class FirstUnique {
  //用linkedhashset可以大大缩减代码长度
  //linkedhashset是有序的hashset 继承了hashset的很多功能
  //比如remove和add都不需要自己写了
+ //并且用iterator接口 iterator有函数.next()
  class FirstUnique {
     Set<Integer> more = new HashSet<>();
     LinkedHashSet<Integer> queue = new LinkedHashSet<>();
@@ -101,3 +102,18 @@ class FirstUnique {
         }
     }
 }
+********************************
+Iterator interface defines three methods:
+
+// Returns true if the iteration has more elements
+public boolean hasNext();
+
+// Returns the next element in the iteration
+// It throws NoSuchElementException if no more 
+// element present
+public Object next();
+
+// Remove the next element in the iteration
+// This method can be called only once per call
+// to next()
+public void remove();
