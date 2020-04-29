@@ -1,0 +1,56 @@
+//recursive 
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        return dfs(root, sum, 0);
+    }
+    
+    public boolean dfs(TreeNode root, int sum, int currSum) {
+        if(root == null) return false;
+        if(root.left == null && root.right == null) {
+            if(root.val + currSum == sum) return true;
+            else return false;
+        }
+        return dfs(root.left, sum, currSum + root.val) || dfs(root.right, sum, currSum + root.val);
+    }
+}
+
+//iterative
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if(root == null) return false;
+        Stack<TreeNode> node = new Stack<>();
+        Stack<Integer> val = new Stack<>();
+        node.push(root);
+        val.push(root.val);
+        while(!node.isEmpty()) {
+            TreeNode curr = node.pop();
+            int currVal = val.pop();
+            if(curr.left == null && curr.right == null) {
+                if(currVal == sum) return true;
+            }
+            else {
+                if(curr.left != null) {//只在stack里面加不为null的，虽然stack里面可以存储null
+                    node.push(curr.left);
+                    val.push(curr.left.val + currVal);
+                }
+                if(curr.right != null) {
+                    node.push(curr.right);
+                    val.push(curr.right.val + currVal);
+                }
+            }
+        }
+        
+    
+        return false;
+    }  
+   
+}
