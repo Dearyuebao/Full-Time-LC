@@ -1,0 +1,19 @@
+
+class Solution {
+    int max = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        dfs(root);
+        return max;
+    }
+    
+    public int dfs(TreeNode root) {
+        if(root == null) return 0;
+        int left = Math.max(0, dfs(root.left));
+        int right = Math.max(0, dfs(root.right));
+        max = Math.max(max, root.val + left + right);
+        return root.val + Math.max(left, right);
+    }
+}
+//不一定要是完整的路径 dfs每次计算的是以当前node为顶点的最大和
+//退出条件是root == null 很机智 
+//整体思路是相的差不多了 但是树的dfs还是不太会写
