@@ -1,6 +1,8 @@
 
 //下面是我自己写的代码 put的时候时间复杂度有点高
 //用的几乎和lru一样的方法
+//这道题还有时间复杂度更低的方法，但我没有看，感觉题目很难，目前先消化这一种方法吧
+
 class LFUCache {
     class DLinkedNode {
         int key;
