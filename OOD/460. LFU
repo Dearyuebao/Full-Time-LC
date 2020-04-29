@@ -1,0 +1,100 @@
+
+//下面是我自己写的代码 put的时候时间复杂度有点高
+//用的几乎和lru一样的方法
+class LFUCache {
+    class DLinkedNode {
+        int key;
+        int val;
+        int freq;
+        DLinkedNode pre;
+        DLinkedNode post;
+    }
+    
+    DLinkedNode head = new DLinkedNode();
+    DLinkedNode tail = new DLinkedNode();
+    Map<Integer, DLinkedNode> map = new HashMap<>();
+    int capacity;
+    
+    public LFUCache(int capacity) {
+        this.head.pre = null;
+        this.head.post = tail;
+        this.tail.pre = head;
+        this.tail.post = null;
+        this.capacity = capacity;
+        this.head.freq = Integer.MAX_VALUE;
+        this.tail.freq = Integer.MIN_VALUE;
+    }
+    
+    public int get(int key) {
+        if(map.containsKey(key)) {
+            map.get(key).freq += 1;
+            moveToFront(map.get(key));
+            return map.get(key).val;
+        }
+        else return -1;
+    }
+    
+    public void put(int key, int value) {
+        if(this.capacity == 0) return;
+        if(map.containsKey(key)) {
+            DLinkedNode curr = map.get(key);
+            curr.val = value;
+            curr.freq += 1;
+            moveToFront(curr);
+        } else {
+            if(map.size() + 1 > this.capacity) popTail();
+            DLinkedNode node = new DLinkedNode();
+            node.key = key;
+            node.val = value;
+            node.freq = 1;
+            addTail(node);
+            moveToFront(node);
+        }
+    }
+    
+    public void moveToFront(DLinkedNode node) {
+        DLinkedNode prenode = node.pre;
+        while(prenode.freq <= node.freq) {
+            DLinkedNode nextpre = prenode.pre;
+            swap(prenode, node);
+            prenode = nextpre;
+        }
+    }
+    
+    public void swap(DLinkedNode prenode, DLinkedNode node) {
+        DLinkedNode first = prenode.pre;
+        DLinkedNode second = node.post;
+        first.post = node;
+        node.pre = first;
+        prenode.post = second;
+        second.pre = prenode;
+        prenode.pre = node;
+        node.post = prenode;
+    }
+    
+    public void addTail(DLinkedNode node) {
+        DLinkedNode prenode = tail.pre;
+        prenode.post = node;
+        node.pre = prenode;
+        node.post = tail;
+        tail.pre = node;
+        map.put(node.key, node);
+    }
+    
+    public void popTail() {
+        // if(head.post != tail) {
+            DLinkedNode prenode = tail.pre;
+            DLinkedNode newpre = prenode.pre;
+            newpre.post = tail;
+            tail.pre = newpre;
+            map.remove(prenode.key);
+        //}
+    }
+}
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
