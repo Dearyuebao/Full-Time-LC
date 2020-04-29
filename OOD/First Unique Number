@@ -75,3 +75,29 @@ class FirstUnique {
  * int param_1 = obj.showFirstUnique();
  * obj.add(value);
  */
+ 
+ //用linkedhashset可以大大缩减代码长度
+ //linkedhashset是有序的hashset 继承了hashset的很多功能
+ //比如remove和add都不需要自己写了
+ class FirstUnique {
+    Set<Integer> more = new HashSet<>();
+    LinkedHashSet<Integer> queue = new LinkedHashSet<>();
+    public FirstUnique(int[] nums) {
+        for(int each: nums) add(each);
+    }
+    
+    public int showFirstUnique() {
+        if(queue.size() == 0) return -1;
+        return queue.iterator().next();
+    }
+    
+    public void add(int value) {
+        if(more.contains(value)) return;
+        if(queue.contains(value)) {
+            queue.remove(value);
+            more.add(value);
+        } else {
+            queue.add(value);
+        }
+    }
+}
