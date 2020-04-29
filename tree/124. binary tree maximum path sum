@@ -17,3 +17,39 @@ class Solution {
 //不一定要是完整的路径 dfs每次计算的是以当前node为顶点的最大和
 //退出条件是root == null 很机智 
 //整体思路是相的差不多了 但是树的dfs还是不太会写
+
+//iterative
+//preorder遍历加入stack 再取出来相当于postorder
+//用hashmap来记录每一个node的信息 此方法可以通用到很多题
+ 
+class Solution {
+    public Stack<TreeNode> postOrderTraversal(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        Stack<TreeNode> post = new Stack<>();
+        if(root == null) return post;
+        stack.push(root);
+        while(!stack.isEmpty()) {
+            TreeNode curr = stack.pop();
+            post.push(curr);
+            if(curr.right != null) stack.push(curr.right);
+            if(curr.left != null) stack.push(curr.left);
+        }
+        return post;
+    }
+    public int maxPathSum(TreeNode root) {
+        Map<TreeNode, Integer> map = new HashMap<>();
+        map.put(null, 0);
+        int max = Integer.MIN_VALUE;
+        Stack<TreeNode> stack = postOrderTraversal(root);
+        while(!stack.isEmpty()) {
+            TreeNode curr = stack.pop();
+            int left = Math.max(0, map.get(curr.left));
+            int right = Math.max(0, map.get(curr.right));
+            map.put(curr, curr.val + Math.max(left, right));
+            max = Math.max(max, curr.val + left + right);
+        }
+        return max;
+    }
+    
+    
+}
