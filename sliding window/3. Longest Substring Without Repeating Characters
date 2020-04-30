@@ -1,0 +1,44 @@
+//用的经典sliding window模版
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length() == 0) return 0;
+        int max = 0;
+        int start = 0, end = 0;
+        int[] num = new int[256];
+        while(end < s.length()) {
+            num[s.charAt(end)]++;
+            if(num[s.charAt(end)] >= 2) {
+                while(num[s.charAt(start)] < 2) {
+                    num[s.charAt(start)]--;
+                    start++;
+                }
+                num[s.charAt(start)]--;
+                start++;
+            } 
+            System.out.println(start+ " "+ end + " " + s.substring(start, end + 1));
+            max = Math.max(max, end - start + 1);
+            end++;
+        }
+        return max;
+    }
+}
+
+//对于start更新的while循环那里可以用hashmap来代替 value记录的是上一次出现相同字符的位置
+//这种方法都不用int[] num = new int[256];了
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length() == 0) return 0;
+        int max = 0;
+        int start = 0, end = 0;
+        Map<Character, Integer> map = new HashMap<>();
+        while(end < s.length()) {
+            if(map.containsKey(s.charAt(end))) {
+                start = Math.max(start, map.get(s.charAt(end)) + 1);//这个地方要注意 因为不能start再找回去 并且我们不清空map的
+            } 
+            map.put(s.charAt(end), end);
+            max = Math.max(max, end - start + 1);
+            end++;
+        }
+        return max;
+    }
+}
