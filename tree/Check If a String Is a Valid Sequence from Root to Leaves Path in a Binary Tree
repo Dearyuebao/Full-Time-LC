@@ -1,0 +1,46 @@
+//我的bfs做法 一次accept
+
+class Solution {
+    public boolean isValidSequence(TreeNode root, int[] arr) {
+        Queue<TreeNode> q = new LinkedList<>();
+        int pointer = 0;
+        if(root == null && arr.length == 0) return true;
+        if(root == null || arr.length == 0) return false;
+        if(root.val == arr[pointer]) q.add(root);
+        pointer++;
+        while(!q.isEmpty() && pointer < arr.length) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                TreeNode curr = q.poll();
+                if(curr.left != null) {
+                    if(curr.left.val == arr[pointer]) q.add(curr.left);
+                } 
+                if(curr.right != null) {
+                    if(curr.right.val == arr[pointer]) q.add(curr.right);
+                }
+            }
+            pointer++;
+        }
+        if(q.isEmpty()) return false;
+        while(!q.isEmpty()) {
+            TreeNode curr = q.poll();
+            if(curr.left == null && curr.right == null) return true;
+        }
+        return false;
+    }
+}
+
+//我的dfs算法
+class Solution {
+    public boolean isValidSequence(TreeNode root, int[] arr) {
+        if(root == null && arr.length == 0) return true;
+       return dfs(root, arr, 0);
+    }
+    
+    public boolean dfs(TreeNode root, int[] arr, int depth) {
+        if(root == null || depth == arr.length) return false;
+        if(root.val != arr[depth]) return false;
+        if(depth == arr.length - 1 && root.left == null && root.right == null) return true;
+        return dfs(root.left, arr, depth + 1) || dfs(root.right, arr, depth + 1);
+    }
+}
