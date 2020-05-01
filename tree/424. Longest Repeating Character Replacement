@@ -1,0 +1,25 @@
+//num里记录的是sliding window里面每个字符的个数
+//但是我们不需要更新window里面maxcount的实际个数
+//只有maxcount更新了（变更大了） window才有expand的可能 才可能去更新最后的最大值
+//每次不及时更新maxcount并不会影响maxcount变大 所以只需要记得更新num就可以了
+
+//我觉得是一道比较难的sliding window, maxcount每次不更新这个地方很难想 我起初的想法是每次都找window里面的最多的 这太浪费时间了 
+
+//值得学习 还没有领悟很深
+class Solution {
+    public int characterReplacement(String s, int k) {
+        int[] num = new int[26];
+        int start = 0, max = 0, end = 0, maxCount = 0;
+        while(end < s.length()) {
+            num[s.charAt(end) - 'A']++;
+            maxCount = Math.max(maxCount,num[s.charAt(end) - 'A']);
+            int replace = end - start + 1 - maxCount;//重要！
+            if(replace > k) {
+                num[s.charAt(start++) - 'A']--;
+            }
+            max = Math.max(end - start + 1, max);
+            end++;
+        }
+        return max;
+    }
+}
