@@ -1,0 +1,16 @@
+//这个的maximum不是dp的标志 可以在找满足条件的subarray的过程中 更新max值
+//和找subarray sum is k的个数其实是一个题
+
+class Solution {
+    public int maxSubArrayLen(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int max = 0, sum = 0;
+        for(int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if(map.containsKey(sum - k)) max = Math.max(max, i - map.get(sum - k));
+            map.putIfAbsent(sum, i);
+        }
+        return max;
+    }
+}
