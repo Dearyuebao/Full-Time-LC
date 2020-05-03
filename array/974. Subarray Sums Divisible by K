@@ -1,0 +1,21 @@
+//和523. continuous subarray sum很像
+//用sum 每次取模 map里存的是曾经出现过这个模的个数 出现过几个 就多出来几个subarray
+//需要注意的是 取模有时候遇到负数 要给负数加k变成正数
+class Solution {
+    public int subarraysDivByK(int[] A, int K) {
+        if(K == 0) return 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        int sum = 0;
+        int res = 0;
+        for(int i = 0; i < A.length; i++) {
+            sum += A[i];
+            sum %= K;
+            if(sum < 0) sum += K;
+            res += map.getOrDefault(sum, 0);
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return res;
+    }
+}
+//4 4
