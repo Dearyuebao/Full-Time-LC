@@ -1,0 +1,18 @@
+//想法倒是很简单 写起来容易出小错误 还是因为代码能力差造成的
+class Solution {
+    public int pivotIndex(int[] nums) {
+        if(nums.length == 0) return -1;
+        int n = nums.length;
+        int[] inverse = new int[n];
+        inverse[n - 1] = nums[n - 1];
+        for(int i = n - 2; i >= 0; i--) inverse[i] = inverse[i + 1] + nums[i];
+        int sum = nums[0];
+        if(inverse[1] == 0) return 0;
+        for(int i = 1; i < n - 1; i++) {
+            if(sum == inverse[i + 1]) return i;
+            sum += nums[i];
+        }
+        if(sum == 0) return n - 1;
+        return -1;
+    }
+}
