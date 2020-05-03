@@ -1,0 +1,16 @@
+//dp局部最优解 每一步都先找到到算这个点在内可能的最大值 由于数组中有负数 所以也要存储每一步的最小值 为了以后使用
+//不是只要变小了（end加一个使产生不符合条件的）就要更新start，所以不是start-end模版
+//求最值 往往是dp
+class Solution {
+    public int maxProduct(int[] nums) {
+        int maxToThisPoint = nums[0], minToThisPoint = nums[0];
+        int max = nums[0];
+        for(int i = 1; i < nums.length; i++) {
+            int temp = maxToThisPoint;
+            maxToThisPoint = Math.max(Math.max(maxToThisPoint * nums[i], minToThisPoint * nums[i]), nums[i]);
+            minToThisPoint = Math.min(Math.min(temp * nums[i], minToThisPoint * nums[i]), nums[i]);
+            max = Math.max(max, maxToThisPoint);
+        }
+        return max;
+    }
+}
