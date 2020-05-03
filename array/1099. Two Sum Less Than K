@@ -1,0 +1,36 @@
+//不是找subarray问题 如果发现O(N)难以做到的话 就要考虑sort
+//我的不是很好的解法
+class Solution {
+    public int twoSumLessThanK(int[] A, int K) {
+        Arrays.sort(A);
+        int max = Integer.MIN_VALUE;
+        for(int i = A.length - 1; i >= 1; i--) {
+            if(A[i] > K) continue;
+            for(int j = i - 1; j >= 0; j--) {
+                if(A[i] + A[j] < K) {
+                    max = Math.max(max, A[i] + A[j]);
+                    break;
+                }
+            }
+        }
+        return max == Integer.MIN_VALUE? -1: max;
+    }
+}
+
+//学习一下
+//！！都已经sort了 就可以从两边取了 不要再从一边取了
+class Solution {
+    public int twoSumLessThanK(int[] A, int K) {
+        Arrays.sort(A);
+        int max = Integer.MIN_VALUE;
+        int i = 0, j = A.length - 1;
+        while(i < j) {
+            int sum = A[i] + A[j];
+            if(sum < K) {
+                max = Math.max(max, sum);
+                i++;
+            } else j--;
+        }
+        return max == Integer.MIN_VALUE? -1:max;
+    }
+}
