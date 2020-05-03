@@ -1,0 +1,20 @@
+//在map里存储% 启发我想到下面这种2sum的变形
+//如果2sum改为两个数的和是k的整数倍 也可以每次map存num[i] % k, index， 每次检查map里有没有 k - num[j] % k
+//对于此题 每次存储的是前面所有数字和的%k的模
+//如果i 和 j的模相等 那么（i + 1, j）的和是可以被k整除的
+class Solution {
+    public boolean checkSubarraySum(int[] nums, int k) {
+        
+        Map<Integer, Integer> map = new HashMap<>();
+        int sum = 0;
+        map.put(0, -1);
+        for(int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if(k != 0) sum = sum % k;
+            if(map.containsKey(sum)) if((i - map.get(sum)) > 1) return true;
+            map.putIfAbsent(sum, i);
+        }
+        return false;
+        
+    }
+}
