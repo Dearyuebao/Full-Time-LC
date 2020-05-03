@@ -2,6 +2,8 @@
 //如果2sum改为两个数的和是k的整数倍 也可以每次map存num[i] % k, index， 每次检查map里有没有 k - num[j] % k
 //对于此题 每次存储的是前面所有数字和的%k的模
 //如果i 和 j的模相等 那么（i + 1, j）的和是可以被k整除的
+//注意k可以为0 这种带乘除的一定要考虑到0的特殊情况
+//0不可以做被除数
 class Solution {
     public boolean checkSubarraySum(int[] nums, int k) {
         
