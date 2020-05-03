@@ -1,0 +1,20 @@
+//一开始我想用累加配合hashmap的模版做 发现无法避免遍历到每一个要去前面查找前面的每一个（类似于dp那种感觉）
+//这个时候就要考虑sliding window了
+//与subarray sum那种可以结合hashmap做法适合的题不同 这种当出现了不满足 不应该更新start start还有可能要回去找 所以这种题不能用sliding window
+//此题 一旦超过了 是可以更改start的 这种题可以用sliding window 有一个累积效应并且不会再往回的
+class Solution {
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        if(k == 0) return 0;
+        int product = 1, start = 0, end = 0;
+        int sum = 0;
+        while(end < nums.length) {
+            product *= nums[end];
+            while(product >= k && start <= end) {
+                product /= nums[start++];
+            }
+            sum += end - start + 1;
+            end = Math.max(end + 1, start);
+        }
+        return sum;
+    }
+}
