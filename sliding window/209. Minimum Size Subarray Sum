@@ -1,0 +1,18 @@
+//以每一个结尾都试一试 当以某一个为结尾 当前window里面有相加和大于k的情况时 找到以此为结尾最大的start
+class Solution {
+    public int minSubArrayLen(int s, int[] nums) {
+        int min = Integer.MAX_VALUE, sum = 0, start = 0, end = 0;
+        while(end < nums.length) {
+            sum += nums[end];
+            if(sum >= s) { 
+                while(sum >= s) {
+                    sum -= nums[start];
+                    start++;
+                }
+                min = Math.min(min, end - start + 2);
+            } 
+            end++;
+        }
+        return min == Integer.MAX_VALUE? 0:min;
+    }
+}
