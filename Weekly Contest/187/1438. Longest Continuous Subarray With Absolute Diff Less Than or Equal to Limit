@@ -1,0 +1,28 @@
+//sliding window + priorityqueue(用来存储limit)
+//我的o n 做法
+class Solution {
+    public int longestSubarray(int[] nums, int limit) {
+        int start = 0, end = 1;
+        int max = 1;
+        PriorityQueue<Integer> large = new PriorityQueue<>((a, b) -> (a - b));
+        PriorityQueue<Integer> small = new PriorityQueue<>((a, b) -> (b - a));
+        large.add(nums[0] + limit);
+        small.add(nums[0] - limit);
+        while(end < nums.length) {
+            int curr = nums[end];
+            if(curr >= small.peek() && curr <= large.peek()) max = Math.max(end - start + 1, max);
+            else {
+                while(!small.isEmpty() && (curr < small.peek() || curr > large.peek())) {
+                    small.remove(nums[start] - limit);
+                    large.remove(nums[start] + limit);
+                    start++;
+                }
+            }
+            large.add(curr + limit);
+            small.add(curr - limit);
+            end++;
+        }
+        return max;
+    }
+}
+//8 2 4 7, 4
