@@ -1,0 +1,15 @@
+class Solution {
+    public String destCity(List<List<String>> paths) {
+        Map<String, String> map = new HashMap<>();
+        for(List<String> each:paths) {
+            String src = each.get(0);
+            String des = each.get(1);
+            map.put(src, des);
+        }
+        String source = paths.get(0).get(0);
+        while(map.containsKey(source)) {
+            source = map.get(source);
+        }
+        return source;
+    }
+}
