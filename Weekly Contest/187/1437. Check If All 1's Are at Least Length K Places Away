@@ -1,0 +1,13 @@
+//很简单
+class Solution {
+    public boolean kLengthApart(int[] nums, int k) {
+        int pre = -1 * k - 2;//初始值千万要注意 下面要对这个做减法 我一开始用了Integer.MIN_VALUE 会引起超界问题
+        for(int i = 0; i < nums.length; i++) {
+            if(nums[i] == 1) {
+                if(i - pre - 1 < k) return false;
+                pre = i;
+            }
+        }
+        return true;
+    }
+}
