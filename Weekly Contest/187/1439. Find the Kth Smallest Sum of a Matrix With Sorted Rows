@@ -1,0 +1,27 @@
+//hard题 我只能比较暴力解了。。。
+//保持q的size是k
+//一层一层累加
+//hard题对时间复杂度容忍度很高的。。
+//但这方法我还是自己没想出来
+//一直把自己陷在看column的怪圈
+class Solution {
+    public int kthSmallest(int[][] mat, int k) {
+        int m = mat.length, n = mat[0].length;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> (b - a));
+        for(int i = 0; i < n; i++) {
+            pq.add(mat[0][i]);
+            if(pq.size() > k) pq.poll();
+        }
+        for(int i = 1; i < m; i++) {
+            PriorityQueue<Integer> curr = new PriorityQueue<>((a, b) -> (b - a));
+            for(int each:pq) {
+                for(int j = 0; j < n; j++) {
+                    curr.add(each + mat[i][j]);
+                    if(curr.size() > k) curr.poll();
+                }
+            }
+            pq = curr;
+        }
+        return pq.poll();
+    }
+}
