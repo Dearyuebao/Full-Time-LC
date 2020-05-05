@@ -1,0 +1,38 @@
+//全部放在一个pq里进行排序
+//第一次见其实还蛮难想的
+/*
+// Definition for an Interval.
+class Interval {
+    public int start;
+    public int end;
+
+    public Interval() {}
+
+    public Interval(int _start,int _end) {
+        start = _start;
+        end = _end;
+    }
+};
+*/
+
+class Solution {
+    public List<Interval> employeeFreeTime(List<List<Interval>> schedule) {
+        List<Interval> res = new ArrayList<>();
+        PriorityQueue<Interval> pq = new PriorityQueue<>((a, b) -> (a.start - b.start));
+        schedule.forEach(e -> pq.addAll(e));
+        Interval first = pq.poll();
+        int start = first.start, end = first.end;
+        while(!pq.isEmpty()) {
+            Interval curr = pq.poll();
+            int currStart = curr.start, currEnd = curr.end;
+            if(currStart > end) {
+                res.add(new Interval(end, currStart));
+                start = currStart;
+                end = currEnd;
+            } else {
+                end = Math.max(end, currEnd);
+            }
+        }
+        return res;
+    }
+}
