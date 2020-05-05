@@ -1,0 +1,24 @@
+//如何能最大化利用资源
+//在pq里 栈顶元素是end最小的 如果新加入的元素（start肯定比pq里的每一个都大 或者等于）的开始时间比栈顶元素结束时间小 那么一定比栈里每个元素
+//的结束时间都小 就要为他新开辟一个房间；如果比栈顶元素结束时间大 他们是不相交的 他就可以和栈顶元素去一个房间 用这个新的元素代替栈顶元素放入pq中
+//pq里存的是每个房间的最后一个成员（结束时间最大）
+//这个题好难想 nature给我讲的 他面试有考过这个题
+class Solution {
+    public int minMeetingRooms(int[][] intervals) {
+        if(intervals.length == 0) return 0;
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (a[1] - b[1]));
+        pq.add(intervals[0]);
+        for(int i = 1; i < intervals.length; i++) {
+            int smallestEnd = pq.peek()[1];
+            int start = intervals[i][0];
+            if(start >= smallestEnd) {
+                pq.poll();
+                pq.add(intervals[i]);
+            } else {
+                pq.add(intervals[i]);
+            }
+        }
+        return pq.size();
+    }
+}
