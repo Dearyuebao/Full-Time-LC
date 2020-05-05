@@ -1,0 +1,29 @@
+//这种题一般要先把start排序
+//也是合理利用资源问题 和meeting room 2很像
+//但是pq里按照end从大到小排 每次如果新加入元素和栈顶元素有交集 则把之前栈顶元素poll 放入他们的交集 
+//end大的在栈顶的原因 新加入元素如果和它都没有交集的话 那和end更小的就更不可能有交集了
+//做完meeting room 2之后独立写出来了
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+        if(points.length == 0) return 0;
+        Arrays.sort(points, (a, b)->Integer.compare(a[0], b[0]));
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (b[1] - a[1]));
+        pq.add(points[0]);
+        for(int i = 1; i < points.length; i++) {
+            int[] peekEle = pq.peek();
+            int[] currEle = points[i];
+            if(currEle[0] <= peekEle[1]) {
+                pq.poll();
+                pq.add(new int[]{currEle[0], Math.min(currEle[1], peekEle[1])});
+            } else {
+                pq.add(currEle);
+            }
+        }
+        return pq.size();
+    }
+}
+
+//1  6
+//  2   8
+//     7      12
+//         10    16
