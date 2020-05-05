@@ -1,3 +1,4 @@
+//我多此一举的做法 尽量要先考虑能不能只把下一个和当前track的那个相比
 //这种题一般要先把start排序
 //也是合理利用资源问题 和meeting room 2很像
 //但是pq里按照end从大到小排 每次如果新加入元素和栈顶元素有交集 则把之前栈顶元素poll 放入他们的交集 
@@ -27,3 +28,31 @@ class Solution {
 //  2   8
 //     7      12
 //         10    16
+
+//greedy的做法 肯定要一根针来戳破第一个气球的 看看第一根针同时还能把哪些气球一起戳破
+//track当前这根针目的戳破第一个气球的end
+//当新来的start大于end的时候 就需要第二根针了 再把这个新来的end更新为end
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+        if(points.length == 0) return 0;
+        Arrays.sort(points, (a, b)->Integer.compare(a[1], b[1]));
+        // Arrays.sort(points, new Comparator<int[]>() {
+      //@Override
+      //public int compare(int[] o1, int[] o2) {
+       // return o1[1] - o2[1];
+      //}
+   // });
+        int end = points[0][1];
+        int arrows = 1;
+        for(int i= 1; i < points.length; i++) {
+            if(points[i][0] > end) {
+                end = points[i][1];
+                arrows += 1;
+            }
+        }
+        return arrows;
+    }
+}
+//实际也是interval的思想 把它顺一遍就好了
+//实在没得可track的时候再meeting room 2
+
