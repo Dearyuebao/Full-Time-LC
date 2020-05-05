@@ -1,0 +1,23 @@
+//我自己没有想出来。。。
+//看了答案觉得好机智 哪个计算到end了就往后看下一个interval
+class Solution {
+    public int[][] intervalIntersection(int[][] A, int[][] B) {
+        List<int[]> res = new ArrayList<>();
+        int i = 0, j = 0;
+        while(i < A.length && j < B.length) {
+            int biggerStart = Math.max(A[i][0], B[j][0]);
+            int smallerEnd = Math.min(A[i][1], B[j][1]);
+            if(biggerStart <= smallerEnd) {
+                res.add(new int[]{biggerStart, smallerEnd});
+            }
+            if(A[i][1] == smallerEnd) i++;
+            if(B[j][1] == smallerEnd) j++;
+        }
+        int[][] result = new int[res.size()][2];
+        int count = 0;
+        for(int[] each: res) {
+            result[count++] = each;
+        }
+        return result;
+    }
+}
