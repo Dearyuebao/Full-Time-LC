@@ -1,0 +1,58 @@
+//我的直方图累加思路 没有用模版 因为没有想到这个怎么track
+class Solution {
+    public boolean carPooling(int[][] trips, int capacity) {
+        int[] count= new int[1001];
+        for(int[] each:trips) {
+            for(int i = each[1];i < each[2]; i++) {
+                count[i] += each[0];
+            }
+        }
+        for(int i = 0; i < 1001; i++) {
+            if(count[i] > capacity) return false;
+        }
+        return true;
+    }
+}
+
+//我的另建类的方法 还是把start end都看成一样的来排序
+//如果遇到的点是start track cap + capa; if end, track cap - capa
+class Solution {
+    public boolean carPooling(int[][] trips, int capacity) {
+        List<node> list = new ArrayList<>();
+        for(int i = 0; i < trips.length; i++) {
+            node currS = new node(trips[i][1], trips[i][0]);
+            currS.isStart = true;
+            list.add(currS);
+            node currE = new node(trips[i][2], trips[i][0]);
+            currE.isStart = false;
+            list.add(currE);
+        }
+        Collections.sort(list, new Comparator<node>() {
+            public int compare(node a, node b) {
+                if(a.val == b.val) {
+                    if(!a.isStart) return -1;
+                    else if(!b.isStart) return 1;
+                }
+                return a.val - b.val;
+            }
+        });
+        int cap = 0;
+        for(node each:list) {
+            if(each.isStart) cap += each.capa;
+            else cap -= each.capa;
+            if(cap > capacity) return false;
+        }
+        return true;
+        
+    }
+    
+    class node {
+        boolean isStart;
+        int val;
+        int capa;
+        public node(int val, int capa) {
+            this.val = val;
+            this.capa = capa;
+        }
+    }
+}
