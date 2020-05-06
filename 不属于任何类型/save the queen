@@ -1,0 +1,50 @@
+public static void solve(int n, List<Integer> a) {
+    // Print your result
+        Collections.sort(a, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer a1, Integer b1) {
+                return b1.intValue() - a1.intValue();
+            }
+        });
+        int needAdjust = n;
+        double sum = 0;
+        for(int each: a) sum += each;
+        while(sum / needAdjust < a.get(0)) {
+            sum -= a.get(0);
+            needAdjust--;
+            a.remove(0);
+        } 
+        double res = sum / needAdjust;
+        System.out.println(res) ;
+
+    }
+    
+    //save the queen 
+    Sample Input 0
+
+3 4
+1000 100 100 100
+Sample Output 0
+
+150.000000000
+Explanation 0
+
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to .
+Sample Input 1
+
+3 4
+10 15 10 100
+Sample Output 1
+
+17.500000000
+Explanation 1
+
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to time .
+Soldier  can fight invader  from time  to time .
