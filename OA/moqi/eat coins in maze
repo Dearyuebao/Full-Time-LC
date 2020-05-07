@@ -1,0 +1,138 @@
+//这题巨难。。。。。
+//先对起点 终点 每个金币点（这三点为必须经过的点）为起点做bfs
+//把每两个有用点之间的最短距离都用bfs找到 并存储在map里
+
+//注意 set里存int[]是不能用contains来按照值查找的 要用list<integer> map的key也是
+//都存储成list<integer>要好一些
+
+//dfs backtracking 存储好这个hashmap之后 对所有的金币点做permutation 找出所有能经过每个金币的路径和 当走完所有金币的时候
+//加上permutation的第一个到起点的最短距离（从map获得） 和permutation最后一个点到终点的最短距离 看看res是否需要更新
+//这题真的难的可以 网上都找不到 难不成是自己出的。。。
+//规定时间内我没做完
+//下午又想才想到一个bfs 每个点visit不超过四次的做法  但是复杂度太高了
+//晚上用这种办法进行优化 
+//是我开始刷题一年来solve过的最难的题了
+import java.util.*;
+
+// O(min((MN)^2,(MN)!))
+public class maze {
+    public static void main(String[] args) {
+        Integer[][] maz = new Integer[][]{//必须是integer 之后才可以用arrays.aslist加到list里面！！！
+                {0, 2, 1},
+                {1, 2, 0},
+                {1, 0, 0}
+        };
+        List<List<Integer>> maze = new ArrayList<>();
+        for (Integer[] each : maz) {
+            maze.add(Arrays.asList(each));
+        }
+
+        int x = 2, y = 2;
+        int res = solution(maze, x, y);
+        System.out.println(res);
+
+    }
+
+    static Map<List<Integer>, Integer> map = new HashMap<>();
+    static int res = Integer.MAX_VALUE;
+
+    public static int solution(List<List<Integer>> maze, int x, int y) {
+        int m = maze.size(), n = maze.get(0).size();
+        int[][] grid = new int[m][n];
+        Set<List<Integer>> nodes = new HashSet<>();
+        nodes.add(Arrays.asList(new Integer[]{0, 0}));
+        nodes.add(Arrays.asList(new Integer[]{x, y}));
+
+        List<List<Integer>> coins = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                grid[i][j] = maze.get(i).get(j);
+                if (grid[i][j] == 2) {
+                    nodes.add(Arrays.asList(new Integer[]{i, j}));
+                    coins.add(Arrays.asList(new Integer[]{i, j}));
+                }
+            }
+        }
+
+        for (List<Integer> startNode : nodes) {
+            bfs(startNode, nodes, grid);
+        }
+
+        Integer[] test = new Integer[]{0, 0, 0, 1};
+//        System.out.println(map.get(Arrays.asList(test)));
+
+        dfs(coins, new boolean[grid.length][grid[0].length], new ArrayList<>(), 0, x, y);
+
+        if (res == Integer.MAX_VALUE) return -1;
+        return res;
+    }
+
+    public static void dfs(List<List<Integer>> coins, boolean[][] visited, List<List<Integer>> permutation, int sum, int x, int y) {
+        if (permutation.size() == coins.size()) {
+            List<Integer> startCoin = permutation.get(0);
+            List<Integer> endCoin = permutation.get(permutation.size() - 1);
+            Integer[] aToStartcoin = new Integer[]{0, 0, startCoin.get(0), startCoin.get(1)};
+            Integer[] endToB = new Integer[]{endCoin.get(0), endCoin.get(1), x, y};
+            int aToStartcoinDis = map.get(Arrays.asList(aToStartcoin));
+            int endToBDis = map.get(Arrays.asList(endToB));
+            res = Math.min(res, sum + aToStartcoinDis + endToBDis);
+            return;
+        }
+        for (int i = 0; i < coins.size(); i++) {
+            List<Integer> currCoin = coins.get(i);
+            if (visited[currCoin.get(0)][currCoin.get(1)]) continue;
+
+            int tmpSum = sum;
+            if (permutation.size() == 0) sum += 0;
+            else {
+                List<Integer> lastCoin = permutation.get(permutation.size() - 1);
+                Integer[] currKey = new Integer[]{lastCoin.get(0), lastCoin.get(1), currCoin.get(0), currCoin.get(1)};
+                sum += map.get(Arrays.asList(currKey));
+            }
+            permutation.add(new ArrayList<Integer>(currCoin));
+            visited[currCoin.get(0)][currCoin.get(1)] = true;
+            dfs(coins, visited, permutation, sum, x, y);
+            visited[currCoin.get(0)][currCoin.get(1)] = false;
+            permutation.remove(permutation.size() - 1);
+            sum = tmpSum;
+
+        }
+    }
+
+
+    public static void addToMap(List<Integer> startNode, List<Integer> neighbour, int distance) {
+        Integer[] key = new Integer[]{startNode.get(0), startNode.get(1), neighbour.get(0), neighbour.get(1)};
+        map.put(Arrays.asList(key), distance);
+    }
+
+    public static void bfs(List<Integer> startNode, Set<List<Integer>> nodes, int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        int[][] dir = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        Queue<List<Integer>> queue = new LinkedList<>();
+        queue.add(startNode);
+        int distance = 1;
+        boolean[][] visited = new boolean[m][n];
+        visited[startNode.get(0)][startNode.get(1)] = true;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                List<Integer> currNode = queue.poll();
+                int currX = currNode.get(0), currY = currNode.get(1);
+                for (int[] d : dir) {
+                    int newX = currX + d[0];
+                    int newY = currY + d[1];
+                    if (newX >= 0 && newX < m && newY >= 0 && newY < n && visited[newX][newY] == false && grid[newX][newY] != 1) {
+                        List<Integer> neighbour = Arrays.asList(new Integer[]{newX, newY});
+                        queue.add(neighbour);
+                        visited[newX][newY] = true;
+                        if (nodes.contains(neighbour)) {
+                            addToMap(startNode, neighbour, distance);
+                        }
+                    }
+                }
+            }
+            distance++;
+        }
+    }
+}
+
