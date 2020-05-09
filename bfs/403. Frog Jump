@@ -1,0 +1,75 @@
+//我的bfs剪枝算法 时间空间复杂度都不太行
+//每走一步看看以接下来可以走的步数 k-1, k, k + 1能到哪里 能到的那个点是否是stone（把所有stone都存在一个set里）
+//如果这个点是stone 再判断是否以当前步数到达过这个点 （把每个走过的stone以及对应的过来的步数存在另一个set里）
+//用两个queue 一个存当前stone， 另一个存当前步数 两个queue同步加入和poll
+//这是一道hard题 虽然performance不太好 但能accept我还是很高兴的
+//看看discussion是怎么做的
+class Solution {
+    public boolean canCross(int[] stones) {
+        int n = stones.length - 1;
+        Set<Integer> set = new HashSet<>();
+        Set<List<Integer>> pairs = new HashSet<>();
+        pairs.add(Arrays.asList(new Integer[]{1, 1}));
+        for(int s:stones) set.add(s);
+        set.remove(0);
+        set.remove(1);
+        if(stones[0] != 0 || stones[1] != 1) return false;
+        if(stones.length == 2) return true;
+        Queue<Integer> stone = new LinkedList<>();
+        Queue<Integer> step = new LinkedList<>();
+        stone.add(stones[1]);
+        step.add(1);
+        int count = 0;
+        while(!stone.isEmpty() && count < n) {
+            int size = stone.size();
+            for(int i = 0; i < size; i++) {
+                int currStone = stone.poll();
+                int currStep = step.poll();
+                if(currStone == stones[stones.length - 1]) return true;
+                for(int newStep = currStep - 1; newStep <= currStep + 1; newStep++) {
+                    if(set.contains(currStone + newStep)) {
+                        Integer[] pair = new Integer[]{currStone + newStep, newStep};
+                        List<Integer> pairList = Arrays.asList(pair);
+                        if(!pairs.contains(pairList)) {
+                            stone.add(currStone + newStep);
+                            step.add(newStep);
+                            pairs.add(pairList);
+                        }
+                    }
+                }
+            }
+            count++;
+        }
+        return false;
+    }
+}
+
+//dp 走到每一个点 都看看从这个点能到接下来哪个点 这就需要知道从这个点出发可以走多少步 也就是说 需要知道前一个点到这个点走了多少步
+//因此 给了初始值之后 我们每次reach到下一个点的时候 都把下一个点可以走的步数（前一步k, k - 1, k + 1）记下来 这样当我们遍历到这个点的时候 
+//直接就可以从map里get到它可以reach它之后的哪些点
+//用hashmap记录 key是当前stone， 记得初始化给每个点都new hashset<integer> value是当前点可以走的步数
+//每走到一个新的点都要看看它能reach哪个点并为所有reachable的点set里加入这个点能走的距离
+public boolean canCross(int[] stones) {
+        if(stones[0] != 0 || stones[1] != 1) return false;
+        if(stones.length == 2) return true;
+        Map<Integer, HashSet<Integer>> map = new HashMap<>();
+        map.put(0, new HashSet<Integer>());
+        map.get(0).add(1);
+        for(int i = 1; i < stones.length; i++) {
+            map.put(stones[i], new HashSet<>());//注意！！！别忘了
+        }
+        for(int i = 0; i < stones.length - 1; i++) {
+            int stone = stones[i];
+            for(int step: map.get(stone)) {
+                int reach = stone + step;
+                if(reach == stones[stones.length - 1]) return true;
+                Set<Integer> set = map.get(reach);
+                if(set != null) {
+                    set.add(step);
+                    if(step - 1 > 0) set.add(step - 1);
+                    set.add(step + 1);
+                }
+            }
+        }
+        return false;
+    }
