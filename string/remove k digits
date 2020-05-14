@@ -1,0 +1,34 @@
+//我用stack 整体思路是 从头遍历 遇到比栈顶元素小的 就把栈顶元素pop出去 前提是不超过允许移出去的k
+//遍历完所有 当栈里面的元素保证了单调不递减 还需要移出去的话 就从栈顶pop就好 栈顶元素大
+//注意stringbuilder insert(0, char)可以在string前面加字符
+//再去掉所有leading zero
+class Solution {
+    public String removeKdigits(String num, int k) {
+        Stack<Character> stack = new Stack<>();
+        int i = 0;
+        while(i < num.length()) {
+            while(!stack.isEmpty() && num.charAt(i) < stack.peek() && k > 0) {
+                stack.pop();
+                k--;
+            }
+            stack.push(num.charAt(i));
+            i++;
+        }
+        
+        System.out.println(stack.size());
+        System.out.println(k);
+        while(k > 0) {
+            stack.pop();
+            k--;
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()) {
+            sb.insert(0, stack.pop());
+        }
+        String res = sb.toString();
+      
+        while(res.length() > 0 && res.charAt(0) == '0') res = res.substring(1);//去掉leading 0， 加长度判断条件先
+        if(res.length() == 0) return "0";//记得判断长度是否为0
+        return res;
+    }
+}
