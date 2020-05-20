@@ -1,0 +1,89 @@
+//我的忽略了bst 特性的pq + bfs遍历做法 时间复杂度较高
+//keep the size of pq
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int kthSmallest(TreeNode root, int k) {
+        if(root == null) return 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b)->(b - a));
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+        while(!q.isEmpty()) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                TreeNode curr = q.poll();
+                pq.add(curr.val);
+                if(pq.size() > k) pq.poll();
+                if(curr.left != null) q.add(curr.left);
+                if(curr.right != null) q.add(curr.right);
+            }
+        }
+        return pq.poll();
+    }
+    
+    
+}
+
+//binary search dfs
+time complexity: O(N) best, O(N^2) worst
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int kthSmallest(TreeNode root, int k) {
+        int countLeft = count(root.left);
+        if(k == countLeft + 1) return root.val;
+        else if(k <= countLeft) {
+            return kthSmallest(root.left, k);
+        } return kthSmallest(root.right, k - countLeft - 1);
+    }
+    
+    public int count(TreeNode root) {
+        if(root == null) return 0;
+        return 1 + count(root.left) + count(root.right);
+    }
+}
+
+//dfs iterative, in order traversal
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int kthSmallest(TreeNode root, int k) {
+        Stack<TreeNode> st = new Stack<>();
+        while(root != null) {
+            st.push(root);
+            root = root.left;
+        }
+        while(k != 0) {
+            TreeNode curr = st.pop();
+            k--;
+            if(k == 0) return curr.val;
+            TreeNode right = curr.right;
+            while(right != null) {
+                st.push(right);
+                right = right.left;
+            }
+        }
+        return -1;
+    }
+}
