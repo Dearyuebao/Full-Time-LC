@@ -1,0 +1,30 @@
+//当前值是往前看连续的最高值 持续了多少个数字 
+//一开始我理解错了题意
+//保证stack里存的值是递减的 但每遇到的新的值都要push它和它return 的值到stack里 所以必须把栈顶比他小的元素都pop出去
+//关于加到stack里的return的值 res init = 1, res +栈顶元素的return值
+//感觉蛮难讲的
+class StockSpanner {
+     Stack<int[]> stack = new Stack<>();
+    
+    public StockSpanner() {
+        
+    }
+    public int next(int price) {
+        int res = 1;
+        while (!stack.isEmpty() && stack.peek()[0] <= price) {
+            System.out.println("pop: " + stack.peek()[1]);
+            res += stack.pop()[1];
+            
+        }
+        
+        System.out.println("push: " + price + " " + res);
+        stack.push(new int[]{price, res});
+        return res;
+    }
+}
+
+/**
+ * Your StockSpanner object will be instantiated and called as such:
+ * StockSpanner obj = new StockSpanner();
+ * int param_1 = obj.next(price);
+ */
