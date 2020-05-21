@@ -1,0 +1,24 @@
+//自己做出来corner case很多
+//看了discussion 用四个flag 简洁做法：
+public boolean isNumber(String s) {
+        s = s.trim();
+        boolean numSeen = false, eSeen = false, dotSeen = false, afterE = true;
+        for(int i = 0; i < s.length(); i++) {
+            Character curr = s.charAt(i);
+            if(curr >= '0' && curr <='9') {
+                numSeen = true;
+                afterE = true;
+            } else if(curr == '.') {
+                if(dotSeen || eSeen) return false;
+                dotSeen = true;
+            } else if(curr == 'e') {
+                if(eSeen || !numSeen) return false;
+                eSeen = true;
+                afterE = false;
+            } else if(curr == '-' || curr == '+') {
+                if(i != 0 && s.charAt(i - 1) != 'e') return false;
+            } else return false;
+        }
+        return numSeen && afterE;
+    }
+}
