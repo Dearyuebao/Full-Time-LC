@@ -1,0 +1,78 @@
+//permutation + substring equal 做法 tle
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        int n = s1.length();
+        Set<String> set = new HashSet<>();
+        boolean[] visited = new boolean[s1.length()];
+        permutation(set, s1, visited, new StringBuilder());
+        for(int i = 0; i <= s2.length() - n; i++) {
+            if(set.contains(s2.substring(i, i + n))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void permutation(Set<String> set, String s1, boolean[] visited, StringBuilder sb) {
+        if(sb.length() == s1.length()) {
+            set.add(sb.toString());
+            return;
+        }
+        for(int i = 0; i < s1.length(); i++) {
+            if(visited[i]) continue;
+            sb.append(s1.charAt(i));
+            visited[i] = true;
+            permutation(set, s1, visited, sb);
+            visited[i] = false;
+            sb.setLength(sb.length() - 1);
+        }
+    }
+}
+//count 做法
+//o(n^2) arrays.copyof(array, length)记得加length那项
+    class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        int n = s1.length();
+        int[] count = new int[26];
+        for(int i = 0; i < n; i++) {
+            count[s1.charAt(i) - 'a']++;
+        }
+        for(int i = 0; i <= s2.length() - n; i++) {
+            int[] curr = Arrays.copyOf(count, 26);//deep copy
+            for(int j = i; j < i + n; j++) {
+                curr[s2.charAt(j) - 'a']--;
+            }
+            boolean flag = true;
+            for(int m = 0; m < 26; m++) {
+                if(curr[m] != 0) flag = false;
+            }
+            if(flag) return true;
+        }
+        return false;
+    } 
+}
+//我上面的count算法在每一个sliding window 里面都重新计数 这样很不聪明 应该用sliding window的方法 每次更新 时间复杂度o(n)
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        if(s1.length() > s2.length()) return false;
+        int n = s1.length();
+        int[] count = new int[26];
+        for(int i = 0; i < n; i++) {
+            count[s1.charAt(i) - 'a']++;
+            count[s2.charAt(i) - 'a']--;
+        }
+        if(allZeros(count)) return true;
+        for(int i = n; i < s2.length(); i++) {
+            count[s2.charAt(i - n) - 'a']++;
+            count[s2.charAt(i) - 'a']--;
+            if(allZeros(count)) return true;
+        }
+        return false;
+        
+    }
+    public boolean allZeros(int[] count) {
+        for(int i = 0; i < 26; i++) {
+            if(count[i] != 0) return false;
+        }
+        return true;
+    }
+}
