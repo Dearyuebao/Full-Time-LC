@@ -1,0 +1,23 @@
+class Solution {
+    public int maxProduct(String[] words) {
+        int[] check = new int[words.length];
+        int max = Integer.MIN_VALUE;
+        for(int i = 0; i < words.length; i++) {
+            int num = 0;
+            String curr = words[i];
+            for(int j = 0; j < curr.length(); j++) {
+                num |= 1<<curr.charAt(j) - 'a';
+            }
+            check[i] = num;
+        }
+        for(int i = 0; i < words.length - 1; i++) {
+            for(int j = i + 1; j < words.length; j++) {
+                if((check[i] & check[j]) == 0) {
+                    max = Math.max(max, words[i].length() * words[j].length());
+                }
+            }
+        }
+        return max == Integer.MIN_VALUE?0:max;
+    }
+ 
+}
