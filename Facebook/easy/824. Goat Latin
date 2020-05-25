@@ -1,4 +1,4 @@
-//好无聊的题。。
+//好无聊的题。。但是也能体现代码能力 看了discussion可以那么简短写完
 class Solution {
     public String toGoatLatin(String S) {
         String[] s = S.split(" ");
@@ -27,5 +27,24 @@ class Solution {
             }
         }
         return sb.toString();
+    }
+}
+
+//discussion大佬写法
+class Solution {
+    public String toGoatLatin(String S) {
+        Set<Character> vowel = new HashSet<>();
+        String res = "";
+        int count  = 1;
+        for(char each:"aeiouAEIOU".toCharArray()) {
+            vowel.add(each);
+        }
+        String[] s = S.split(" ");
+        for(String each:s) {
+            res += ' ' + (vowel.contains(each.charAt(0))? each:(each.substring(1) + each.charAt(0))) + "ma";
+            for(int j = 0; j < count; j++) res += "a";
+            count++;
+        }
+        return res.substring(1);
     }
 }
