@@ -1,0 +1,31 @@
+//好无聊的题。。
+class Solution {
+    public String toGoatLatin(String S) {
+        String[] s = S.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < s.length; i++) {
+            sb.append(modify(s[i], i));
+            if(i != s.length - 1) sb.append(" ");
+        }
+        return sb.toString();
+    }
+    
+    public String modify(String s, int index) {
+        StringBuilder sb = new StringBuilder();
+        if(s.startsWith("a") || s.startsWith("e") || s.startsWith("i") || s.startsWith("o") || s.startsWith("or") || s.startsWith("u") || s.startsWith("A") || s.startsWith("E") || s.startsWith("I") || s.startsWith("O") || s.startsWith("Or") || s.startsWith("U")) {
+            sb.append(s);
+            sb.append("ma");
+            for(int i = 0; i <= index; i++) {
+                sb.append("a");
+            }
+        } else {
+            sb.append(s.substring(1));
+            sb.append(s.charAt(0));
+            sb.append("ma");
+            for(int i = 0; i <= index; i++) {
+                sb.append("a");
+            }
+        }
+        return sb.toString();
+    }
+}
