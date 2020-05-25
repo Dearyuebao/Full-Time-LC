@@ -1,0 +1,5 @@
+# Write your MySQL query statement below
+//SQL也要会写
+SELECT max(Salary) as SecondHighestSalary
+FROM Employee
+WHERE Salary < (SELECT max(Salary) FROM Employee)
