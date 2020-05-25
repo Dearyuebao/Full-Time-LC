@@ -1,0 +1,29 @@
+/**
+ * The read4 API is defined in the parent class Reader4.
+ *     int read4(char[] buf);
+ */
+//和os里先读到一个确定大小的tmp 再从tmp复制到buf很像 注意n可能比file里字符多 可以相等 也可以比file里的字符少
+public class Solution extends Reader4 {
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    public int read(char[] buf, int n) {
+        int index = 0;
+        char[] tmp = new char[4];
+        while(n > 0) {
+            int num = read4(tmp);
+            for(int i = 0; i < Math.min(num, n); i++) {
+                
+                buf[index + i] = tmp[i];
+            }
+            index += Math.min(num, n);
+            if(num < 4 || n < 4) {
+                break;
+            }
+            n -= 4;
+        }
+        return index;
+    }
+}
