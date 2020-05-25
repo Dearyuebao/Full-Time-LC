@@ -1,0 +1,30 @@
+//很直观的题 但大佬的写法依然那么优秀
+class Solution {
+    public boolean isMonotonic(int[] A) {
+        if(increase(A) || decrease(A)) return true;
+        return false;
+    }
+    public boolean increase(int[] A) {
+        for(int i = 1; i < A.length; i++) {
+            if(A[i] < A[i - 1]) return false;
+        }
+        return true;
+    }
+    
+    public boolean decrease(int[] A) {
+        for(int i = 1; i < A.length; i++) {
+            if(A[i] > A[i - 1]) return false;
+        }
+        return true;
+    }
+}
+
+//大佬写法
+  public boolean isMonotonic(int[] A) {
+        boolean inc = true, dec = true;
+        for (int i = 1; i < A.length; ++i) {
+            inc &= A[i - 1] <= A[i];
+            dec &= A[i - 1] >= A[i];
+        }
+        return inc || dec;
+    }
