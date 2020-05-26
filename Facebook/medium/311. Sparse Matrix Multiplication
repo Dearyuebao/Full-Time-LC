@@ -1,0 +1,64 @@
+//就是实现矩阵相乘
+class Solution {
+    public int[][] multiply(int[][] A, int[][] B) {
+        int m = A.length, n = B[0].length;
+        int[][] res = new int[m][n];
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                res[i][j] = calculate(A, B, i, j);
+            }
+        }
+        return res;
+    }
+    public int calculate(int[][] A, int[][] B, int i, int j) {
+        int num = A[0].length, sum = 0;
+        for(int m = 0; m < num; m++) {
+            sum += A[i][m] * B[m][j];
+        }
+        return sum;
+    }
+}
+
+//更简洁一点写是这样
+public class Solution {
+        public int[][] multiply(int[][] A, int[][] B) {
+            int m = A.length, n = A[0].length, nB = B[0].length;
+            int[][] C = new int[m][nB];
+
+            for(int i = 0; i < m; i++) {
+                    for (int j = 0; j < nB; j++) {
+                        for(int k = 0; k < n; k++) {
+                             C[i][j] += A[i][k] * B[k][j];
+                        }
+                    }
+            }
+            return C;  
+        }
+}
+//如何真正提高performance？
+For each value A[i][k] in matrix A, if it is not zero, we calculate A[i][k] * B[k][j] and 
+accumulate it into C[ i ][ j ] (Key part: the C[ i ][ j ] by now is not the final value in the result matrix !! 
+Remember, in the brute force solution, the final value of C[i][j], takes sum of all multiplication values of
+K corresponding values from A and B? here C[ i ][ j ] is only sum of some multiplication values, 
+NOT ALL until the program is done )
+
+BY NOW, it is very clear that, if the value A[ i ][ k ] from matrix is zero, we skip a For-loop- calculation, 
+which is a loop iterating nB times, and this is the key part of why the smart solution is smart!!!
+
+public class Solution {
+    public int[][] multiply(int[][] A, int[][] B) {
+        int m = A.length, n = A[0].length, nB = B[0].length;
+        int[][] C = new int[m][nB];
+
+        for(int i = 0; i < m; i++) {
+            for(int k = 0; k < n; k++) {
+                if (A[i][k] != 0) {
+                    for (int j = 0; j < nB; j++) {
+                        if (B[k][j] != 0) C[i][j] += A[i][k] * B[k][j];
+                    }
+                }
+            }
+        }
+        return C;   
+    }
+}
