@@ -1,0 +1,92 @@
+//我的做法：复杂度不好
+//先用传统recursive方法post order traversal， 存到一个list
+//取出每一个点给他设定min,max 用新建的类node存储
+//每遇到一个点看一下res需不需要更新
+//感觉可以一边post order traverse一边存储最大最小值 
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    class Node {
+        int min;
+        int max;
+        public Node(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+    }
+    public int maxAncestorDiff(TreeNode root) {
+        List<TreeNode> post = new ArrayList<>();
+        postOrder(root, post);
+        int res = Integer.MIN_VALUE;
+        Map<TreeNode, Node> map = new HashMap<>();
+        map.put(null, new Node(Integer.MAX_VALUE, Integer.MIN_VALUE));
+        for(TreeNode each:post) {
+            if(each.left == null && each.right == null) {
+                Node node = new Node(each.val, each.val);
+                map.put(each, node);
+            } else {
+                int min = Math.min(map.get(each.left).min, map.get(each.right).min);
+                int max = Math.max(map.get(each.left).max, map.get(each.right).max);
+                res = Math.max(res, Math.abs(each.val - min));
+                res = Math.max(res, Math.abs(each.val - max));
+                min = Math.min(min, each.val);
+                max = Math.max(max, each.val);
+                Node node = new Node(min, max);
+                map.put(each, node);
+            }
+        }
+        return res;
+    }
+    
+    public void postOrder(TreeNode root, List<TreeNode> post) {
+        if(root == null) return;
+        postOrder(root.left, post);
+        postOrder(root.right, post);
+        post.add(root);
+    }
+}
+
+//只能看一下大佬的做法 从上往下 每到一个叶子结点 返回max - min 最终结果就是每个叶子结点（每条路径都算过了）的最大差
+//相当于preorder traversal
+public int maxAncestorDiff(TreeNode root) {
+        return dfs(root, root.val, root.val);
+    }
+
+    public int dfs(TreeNode root, int mn, int mx) {
+        if (root == null) return mx - mn;
+        mx = Math.max(mx, root.val);
+        mn = Math.min(mn, root.val);
+        return Math.max(dfs(root.left, mn, mx), dfs(root.right, mn, mx));
+    }
+    
+//还有这种做法 从上到下
+Integer diff = 0;
+    public int maxAncestorDiff(TreeNode root) {
+        
+        dfs(root, root.val, root.val);
+        return diff;
+    }
+    
+   public void dfs(TreeNode root, int max, int min ){
+        if (root == null){
+            return;
+        }
+        max = Math.max(root.val, max);
+        min = Math.min (root.val , min);
+        diff = Math.max (diff, max-min);
+        dfs (root.left , max, min );
+        dfs (root.right , max, min );
+    }
