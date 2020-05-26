@@ -1,0 +1,22 @@
+//想了两分钟想出来 先统计t中每个字符的个数 再用s遍历 如果遇到的字符t里有 加相应个数
+class Solution {
+    public String customSortString(String S, String T) {
+        int[] count = new int[26];
+        for(int i = 0; i < T.length(); i++) count[T.charAt(i) - 'a']++;
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < S.length(); i++) {
+            char curr = S.charAt(i);
+            while(count[curr - 'a'] > 0) {
+                sb.append(curr);
+                count[curr - 'a']--;
+            }
+        }
+        for(int i = 0; i < 26; i++) {
+            while(count[i] > 0) {
+                sb.append((char)(i + 'a'));
+                count[i]--;
+            }
+        }
+        return sb.toString();
+    }
+}
