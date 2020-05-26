@@ -1,0 +1,54 @@
+//我的做法：先inorder遍历一遍每个树 存到list1 list2里面 再用pointer 常用的merge ->sort two list方法
+//感觉medium题 如这个 就是考两个easy知识点的merge:inorder traverse + merge two sorted list
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Integer> getAllElements(TreeNode root1, TreeNode root2) {
+        List<Integer> list1 = new ArrayList<>();
+        inorder(root1, list1);
+        List<Integer> list2 = new ArrayList<>();
+        inorder(root2, list2);
+        int pointer1 = 0, pointer2 = 0;
+        List<Integer> res = new ArrayList<>();
+        while(pointer1 < list1.size() && pointer2 < list2.size()) {
+            if(list1.get(pointer1) <= list2.get(pointer2)) {
+                res.add(list1.get(pointer1));
+                pointer1++;
+            } else {
+                res.add(list2.get(pointer2));
+                pointer2++;
+            }
+        }
+        if(pointer1 < list1.size()) {
+            while(pointer1 < list1.size()) {
+                res.add(list1.get(pointer1++));
+            }
+        }
+        if(pointer2 < list2.size()) {
+            while(pointer2 < list2.size()) {
+                res.add(list2.get(pointer2++));
+            }
+        }
+        return res;
+    }
+    
+    public void inorder(TreeNode root, List<Integer> res) {
+        if(root == null) return;
+        inorder(root.left, res);
+        res.add(root.val);
+        inorder(root.right, res);
+    }
+}
