@@ -1,0 +1,36 @@
+//nature给我讲的
+//可以想到用dfs 但自己实现起来很困难 
+//用for循环来解决 12 * 3 数字组合
+//就只剩下+-*三种符号条件
+//已经+-完变成*的写的很tricky
+//可以想到用dfs 但自己实现起来很困难 
+//multi代表
+//可以想到用dfs 但自己实现起来很困难 
+
+class Solution {
+    public List<String> addOperators(String num, int target) {
+        List<String> res = new ArrayList<>();
+        dfs(num, 0, target, "", 0, 0, res);
+        return res;
+    }
+    
+    public void dfs(String num, int index, int target, String curr, long multi, long memo,List<String> res) {
+        if(index == num.length() && memo == target) {
+            res.add(curr);
+            return;
+        }
+        long cur = 0;
+        for(int i = index; i < num.length(); i++) {
+            if(i != index && num.charAt(index) == '0') continue;//105 -> 1 * 5是为了避免这种情况
+            cur = cur * 10 + num.charAt(i) - '0';
+            if(index == 0) {
+                dfs(num, i + 1, target, curr + cur, cur, cur, res);
+            } else {
+                dfs(num, i + 1, target, curr + "+" + cur, cur, memo + cur, res);
+                dfs(num, i + 1, target, curr + "-" + cur, -cur, memo - cur, res);
+                dfs(num, i + 1, target, curr + "*" + cur, multi * cur, memo + multi * cur - multi, res);
+            }
+        }
+    }
+}
+//multi代表传给下一层的 如果下一层需要*的乘数，memo是计算到当前的值 最后要和target比较
