@@ -1,0 +1,28 @@
+//其实就是number of island i 
+//但是在写的时候还是要注意
+class Solution {
+    int count = 0;//全局
+    public int maxAreaOfIsland(int[][] grid) {
+        int max = 0;
+        for(int i = 0; i < grid.length; i++) {
+            for(int j = 0; j < grid[0].length; j++) {
+                if(grid[i][j] == 1) {
+                    count = 0;//每次count init to 0
+                    countArea(grid, i, j);
+                    max = Math.max(max, count);
+                }
+            }
+        }
+        return max;
+    }
+    int[][] dir = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    public void countArea(int[][] grid, int i, int j) {
+        if(i >= 0 && i < grid.length && j >= 0 && j < grid[0].length && grid[i][j] == 1) {             
+            count++;
+            grid[i][j] = 0;//别忘了！！！
+            for(int[] d:dir) {
+                countArea(grid, i + d[0], j + d[1]);
+            }
+        }
+    }
+}
