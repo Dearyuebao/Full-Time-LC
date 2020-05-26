@@ -1,0 +1,59 @@
+//我的要修改board的做法 dfs
+class Solution {
+    public int countBattleships(char[][] board) {
+        int count = 0, m = board.length, n = board[0].length; 
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(board[i][j] == 'X') {
+                    checkRight(board, i, j + 1);
+                    checkDown(board, i + 1, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    
+    public void checkRight(char[][] board, int i, int j) {
+        while(j < board[0].length) {
+            if(board[i][j] != 'X') return;
+            board[i][j] = '.';
+            j++;
+        }
+    }
+    
+    public void checkDown(char[][] board, int i, int j) {
+        while(i < board.length) {
+            if(board[i][j] != 'X') return;
+            board[i][j] = '.';
+            i++;
+        }
+    }
+}
+//follow up不允许修改board怎么办 想了一下也想到了 
+//但我没写上面那种写法的时候没想到 写完马上想到了
+//所以面试如果没想到最优解 可以先把能想到的办法实现一下 再继续
+class Solution {
+    public int countBattleships(char[][] board) {
+        int count = 0, m = board.length, n = board[0].length; 
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(board[i][j] == 'X') {
+                    if(noLeft(board, i, j - 1) && noUp(board, i - 1, j)) count++;
+                }
+            }
+        }
+        return count;
+    }
+    public boolean noLeft(char[][] board, int i, int j) {
+        if(j < 0) return true;
+        if(board[i][j] != 'X') return true;
+        return false;
+    }
+    
+    public boolean noUp(char[][] board, int i, int j) {
+        if(i < 0) return true;
+        if(board[i][j] != 'X') return true;
+        return false;
+    }
+}
