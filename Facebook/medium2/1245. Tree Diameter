@@ -1,0 +1,95 @@
+//先存成图 再通过任意一个点找离他最远的点 从这个点再找深度 bfs就是结果 用了两次bfs
+class Solution {
+    Map<Integer, List<Integer>> map = new HashMap<>();
+    boolean[] visited;
+    public int treeDiameter(int[][] edges) {
+        for(int[] edge:edges) {
+            int first = edge[0];
+            int second = edge[1];
+            map.putIfAbsent(first, new ArrayList<>());
+            map.get(first).add(second);
+            map.putIfAbsent(second, new ArrayList<>());
+            map.get(second).add(first);
+        }
+        visited = new boolean[map.size()];
+        int max = Integer.MIN_VALUE;
+        max = Math.max(max, findDepth(edges[0][0]));
+        
+        return max - 1;
+    }
+    
+    public int findDepth(int node) {
+        Arrays.fill(visited, false);
+        int depth = 0;
+        Queue<Integer> q = new LinkedList<>();
+        q.add(node);
+        int furthest = node;
+        while(!q.isEmpty()) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                int curr = q.poll();
+                furthest = curr;
+                visited[curr] = true;
+                for(int each:map.get(curr)) {
+                    if(visited[each] == false) q.add(each);
+                }
+            }
+        }
+        Arrays.fill(visited, false);
+        Queue<Integer> newq = new LinkedList<>();
+        newq.add(furthest);
+        while(!newq.isEmpty()) {
+            int size = newq.size();
+            for(int i = 0; i < size; i++) {
+                int curr = newq.poll();
+                visited[curr] = true;
+                for(int each:map.get(curr)) {
+                    if(visited[each] == false) newq.add(each);
+                }
+            }
+            depth++;
+        }
+        return depth;
+    }
+}
+//看看discussion
+//加了一个入度！！！先把最外圈的加进去
+public int treeDiameter(int[][] edges) {
+	int num = edges.length + 1;
+	if (num <= 2) return num - 1;
+
+	int[] degree = new int[num]; //degree of node
+	ArrayList<Integer>[] g = new ArrayList[num]; //build graph
+	for (int i = 0; i < num; i ++) g[i] = new ArrayList<>();
+	for (int[] edge : edges) {
+		degree[edge[0]] ++;
+		degree[edge[1]] ++;
+		g[edge[0]].add(edge[1]);
+		g[edge[1]].add(edge[0]);
+	}
+
+	//add all out layer nodes to queue
+	Queue<Integer> q = new LinkedList<>();
+	for (int i = 0; i < num; i ++) {
+		if (degree[i] == 1) q.offer(i);   
+	}
+
+	int level = -1;
+	int numOfCurLevelNodes = 0; //how many nodes will be added at cur level
+
+	while (!q.isEmpty()) {
+		int size = q.size();
+		level ++;
+		numOfCurLevelNodes = 0;
+		for (int i = 0; i < size; i ++) {
+			int cur = q.poll();
+			numOfCurLevelNodes ++;
+			for (int next : g[cur]) {
+				degree[next] --;
+				if (degree[next] == 1) q.offer(next);
+			}
+		}
+	}
+
+	return numOfCurLevelNodes == 2 ? level * 2 + 1 : level * 2;//这个很机智
+}
