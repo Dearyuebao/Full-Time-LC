@@ -48,3 +48,47 @@ class Solution {
 }
 
 //总结：感觉有一种递增的规律 可以用dfs列举出每一种情况 也可以在每个点取最优解 就是用dp
+
+//在群里大佬的提示下dfs+memo的写法 dfs也和我之前的不一样 他这个recursive 
+//memo记录的是每个index到结尾的最小
+//感觉这个写法更好
+class Solution {
+    Map<Integer, List<Integer>> map = new HashMap<>();
+    boolean[] visited;
+    public int treeDiameter(int[][] edges) {
+        for(int[] edge:edges) {
+            int first = edge[0];
+            int second = edge[1];
+            map.putIfAbsent(first, new ArrayList<>());
+            map.get(first).add(second);
+            map.putIfAbsent(second, new ArrayList<>());
+            map.get(second).add(first);
+        }
+        visited = new boolean[map.size()];
+        int max = Integer.MIN_VALUE;
+        for(int node:map.keySet()) {
+            max = Math.max(max, findDepth(node));
+        }
+        return max - 1;
+    }
+    
+    public int findDepth(int node) {
+        Arrays.fill(visited, false);
+        int depth = 0;
+        Queue<Integer> q = new LinkedList<>();
+        q.add(node);
+        
+        while(!q.isEmpty()) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                int curr = q.poll();
+                visited[curr] = true;
+                for(int each:map.get(curr)) {
+                    if(visited[each] == false) q.add(each);
+                }
+            }
+            depth++;
+        }
+        return depth;
+    }
+}
