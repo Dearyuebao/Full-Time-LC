@@ -1,0 +1,47 @@
+//我的dfs做法 tle了
+class Solution {
+    int min = Integer.MAX_VALUE;
+    public int mincostTickets(int[] days, int[] costs) {
+        dfs(days, costs, 0, -1, 0);
+        return min;
+    }
+    
+    public void dfs(int[] days, int[] costs, int index, int reach, int cost) {
+        if(cost > min) return;
+        if(index == days.length) {
+            min = Math.min(min, cost);
+            return;
+        }
+        
+        if(reach >= days[index]) dfs(days, costs, index + 1, reach, cost);
+        else {
+            dfs(days, costs, index + 1, 29 + days[index], cost + costs[2]);
+            dfs(days, costs, index + 1, 6 + days[index], cost + costs[1]);
+            dfs(days, costs, index + 1, days[index], cost + costs[0]);
+        }
+    }
+}
+//dfs做法tle了就要考虑dp
+//我之前有想过dp 但还没有想出怎么做
+//看看discussion
+//Let minCost(i) denote the minimum cost that will be payed for all trips on days 1 to day 365.
+//The desired answer is then minCost(365).
+//对365天每天都记录
+
+class Solution {
+    public int mincostTickets(int[] days, int[] costs) {
+        boolean[] travel = new boolean[366];
+        for(int day:days) travel[day] = true;
+        int[] dp = new int[366];
+        dp[0] = 0;
+        for(int i = 1; i <366; i++) {
+            if(travel[i] == false) dp[i] = dp[i - 1];
+            else {
+                dp[i] = dp[i - 1] + costs[0];
+                dp[i] = Math.min(dp[i],dp[Math.max(0, i - 7)] + costs[1]);
+                dp[i] = Math.min(dp[i], dp[Math.max(0, i - 30)] + costs[2]);
+            }
+        }
+        return dp[365];
+    }
+}
