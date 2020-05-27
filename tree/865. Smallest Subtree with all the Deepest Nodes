@@ -1,0 +1,16 @@
+//recursive
+class Solution {
+    public TreeNode subtreeWithAllDeepest(TreeNode root) {
+        if(root == null) return root;
+        int left = depth(root.left);
+        int right = depth(root.right);
+        if(left == right) return root;
+        if(left < right) return subtreeWithAllDeepest(root.right);
+        else return subtreeWithAllDeepest(root.left);
+    }
+    
+    public int depth(TreeNode root) {
+        if(root == null) return 0;
+        return Math.max(depth(root.left), depth(root.right)) + 1;
+    }
+}
