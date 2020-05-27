@@ -27,6 +27,7 @@ class Solution {
 //Let minCost(i) denote the minimum cost that will be payed for all trips on days 1 to day 365.
 //The desired answer is then minCost(365).
 //对365天每天都记录
+//track calendar days
 
 class Solution {
     public int mincostTickets(int[] days, int[] costs) {
@@ -45,3 +46,5 @@ class Solution {
         return dp[365];
     }
 }
+
+//总结：感觉有一种递增的规律 可以用dfs列举出每一种情况 也可以在每个点取最优解 就是用dp
