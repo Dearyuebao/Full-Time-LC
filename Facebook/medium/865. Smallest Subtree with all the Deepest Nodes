@@ -1,0 +1,97 @@
+//我的很麻烦的做法
+//先用bfs把每个深度对应的node们储存在map里面
+//bfs的过程中还要记录parent 用一个parent的map形成链式
+//之后对每一个深度最大的node顺着parent链寻找所有的parent 存储在list里面
+//merge所有parent的list
+//虽然写的很麻烦 但是练了一下我的代码能力
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    Map<TreeNode, TreeNode> parent = new HashMap<>();
+    public TreeNode subtreeWithAllDeepest(TreeNode root) {
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+        Map<Integer, List<TreeNode>> map = new HashMap<>();
+        parent.put(root, null);
+        int depth = 1;
+        while(!q.isEmpty()) {
+            int size = q.size();
+            map.put(depth, new ArrayList<>());
+            for(int i = 0; i < size; i++) {
+                TreeNode curr = q.poll();
+                List<TreeNode> currList = map.get(depth);
+                currList.add(curr);
+                map.put(depth, currList);
+                if(curr.left != null) {
+                    q.add(curr.left);
+                    parent.put(curr.left, curr);
+                }
+                if(curr.right != null) {
+                    q.add(curr.right);
+                    parent.put(curr.right, curr);
+                }
+            }
+            depth++;
+        }
+        System.out.println(depth);
+        List<TreeNode> list = map.get(depth - 1);
+        return commonAncestor(list, root);
+    }
+    
+    public TreeNode commonAncestor(List<TreeNode> list, TreeNode root) {
+        List<TreeNode>[] listOfParent = new ArrayList[list.size()];
+        for(int i = 0; i < list.size(); i++) {
+            TreeNode node = list.get(i);
+            listOfParent[i] = new ArrayList<>();
+            listOfParent[i].add(node);
+            while(node != null) {
+                node = parent.get(node);
+                listOfParent[i].add(node);
+            }
+        }
+        //merge list<treenode>
+        List<TreeNode> list1 = listOfParent[0];
+        for(int i = 1; i < list.size(); i++) {
+            List<TreeNode> list2 = listOfParent[i];
+            int pointer1 = list1.size() - 1, pointer2 = list2.size() - 1;
+            List<TreeNode> merge = new ArrayList<>();
+            while(pointer1 >= 0 && pointer2 >= 0 && list1.get(pointer1) == list2.get(pointer2)) {
+                merge.add(0, list1.get(pointer1));
+                pointer1--;
+                pointer2--;
+            }
+            list1.clear();
+            for(int j = 0; j < merge.size(); j++) list1.add(merge.get(j));
+        }
+        return list1.get(0);
+    }
+}
+
+//看看大佬的写法
+//找规律 对每个点来说 如果他左右子树的最大深度相等的话 
+public int depth(TreeNode root){
+		if(root == null ) return 0;
+		return Math.max(depth(root.left),depth(root.right))+1;
+	}
+	public TreeNode subtreeWithAllDeepest(TreeNode root) {
+			if( root == null ) return null;
+			int left =  depth(root.left);
+			int right = depth(root.right);
+			if( left  == right ) return root;
+			if( left > right ) return subtreeWithAllDeepest(root.left);
+			return subtreeWithAllDeepest(root.right);
+	}
