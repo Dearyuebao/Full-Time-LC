@@ -1,0 +1,40 @@
+//很直观的做法 用hashmap
+class Solution {
+    public List<List<String>> findDuplicate(String[] paths) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String path:paths) {
+            String[] p = path.split("\\s");
+            String add = p[0];
+            for(int i = 1; i < p.length; i++) {
+                String currTxt = p[i];
+                int index = currTxt.indexOf("(");
+                String content = currTxt.substring(index);
+                String dir = add + "/" + currTxt.substring(0, index);
+                List<String> list = map.getOrDefault(content, new ArrayList<>());
+                list.add(dir);
+                map.put(content, list);
+                //可以用下面的来代替
+                //String curr = p[i];
+                //String[] file = curr.split("[\\(\\)]");
+                //String content = file[1];
+                //String dir = add + "/" + file[0];
+                //map.putIfAbsent(content, new ArrayList<>());
+                //map.get(content).add(dir);
+            }
+        }
+        List<List<String>> res = new ArrayList<>();
+        for(String each:map.keySet()) {
+            if(map.get(each).size() > 1){
+                res.add(new ArrayList<>(map.get(each)));
+            }
+        }
+        return res;
+    }
+}
+//Follow-up beyond contest:
+Imagine you are given a real file system, how will you search files? DFS or BFS?
+If the file content is very large (GB level), how will you modify your solution?
+If you can only read the file by 1kb each time, how will you modify your solution?
+What is the time complexity of your modified solution? What is the most time-consuming part and memory consuming part of it? How to optimize?
+How to make sure the duplicated files you find are not false positive?
+这个follow up怎么回事
