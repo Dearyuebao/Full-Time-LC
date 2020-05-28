@@ -1,0 +1,38 @@
+//我最初想到的o(n3)做法memory limit exceed了
+//我想以每一个字符为起点 把它能构成的所有子字符串都加到set里
+//这样太占空间 参考discussion的同样复杂度做法
+//以长度为s.length() - 1开始 递减 长度每次-1都clear一次set 从高往低找 只要找到max了就可以返回
+//有点bfs的感觉 每一种长度的一批存在set里
+Set<String> set = new HashSet<>();
+	int max = S.length() - 1, i = 0;
+	for (;i <= S.length();i++) {
+		int j = i;
+		if (j + max > S.length()) {
+			if (--max == 0) break;
+			i = -1;
+			set.clear();
+			continue;
+		}
+		String k = S.substring(j,j+max);
+		if (!set.add(k)) {
+			return max;
+		}
+	}
+	return max;
+  //O(n2) dp和其他字符串不一样的dp dp[i][j]：以i j结尾的最大相同字符串长度
+  class Solution {
+    public int longestRepeatingSubstring(String S) {
+        int n = S.length(), res = 0;
+        int[][] dp = new int[n + 1][n + 1];
+        for(int i = 1; i <= n; i++) {
+            for(int j = i + 1; j <= n; j++) {
+                if(S.charAt(i - 1) == S.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                    res = Math.max(dp[i][j], res);
+                }
+            }
+        }
+        return res;
+    }
+}
+//我觉得DP做法OK了 其他的做法我没有学 还有更简单的做法
