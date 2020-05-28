@@ -1,0 +1,127 @@
+//my pretty straight forward solution:
+class MagicDictionary {
+    Set<String> set = new HashSet<>();
+    /** Initialize your data structure here. */
+    public MagicDictionary() {
+    }
+    
+    /** Build a dictionary through a list of words */
+    public void buildDict(String[] dict) {
+        for(String each:dict) set.add(each);
+    }
+    
+    /** Returns if there is any word in the trie that equals to the given word after modifying exactly one character */
+    public boolean search(String word) {
+        char[] w = word.toCharArray();
+        for(int i = 0; i < word.length(); i++) {
+            for(int j = 0; j < 26; j++) {
+                char tmp = w[i];
+                w[i] = (char)(j + 'a');
+                if(w[i] != tmp) {
+                    if(set.contains(String.valueOf(w))) return true;
+                }
+                w[i] = tmp;
+            }
+        }
+        return false;
+    }
+}
+//hashmap solution key is length, value is strings
+//only check the strings with same length
+//check:count different chars, if count == 1 return true;
+
+Map<Integer, Set<String>> map;
+    /** Initialize your data structure here. */
+    public MagicDictionary() {
+        map = new HashMap<>();
+    }
+    
+    /** Build a dictionary through a list of words */
+    public void buildDict(String[] dict) {
+        for (String s : dict) {
+            int len = s.length();
+            if (!map.containsKey(len)) {
+                map.put(len, new HashSet<>());
+            }
+            map.get(len).add(s);
+        }
+    }
+    
+    /** Returns if there is any word in the trie that equals to the given word after modifying exactly one character */
+    public boolean search(String word) {
+        int len = word.length();
+        if (!map.containsKey(len)) {
+            return false;
+        }
+        for (String s : map.get(len)) {
+            int count = 0;
+            for (int i = 0; i < len; i++) {
+                if (word.charAt(i) != s.charAt(i)) {
+                    count++;
+                }
+            }
+            if (count == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+//can we use trie? check the discussion
+
+class MagicDictionary {
+
+    /** Initialize your data structure here. */
+    TrieNode root;
+    public MagicDictionary() {
+        root = new TrieNode();
+    }
+    
+    /** Build a dictionary through a list of words */
+    public void buildDict(String[] dict) {
+        for (String word : dict) {
+            TrieNode temp = root;
+            int len = word.length();
+            for (int i = 0; i < len; i++) {
+                char c = word.charAt(i);
+                if (temp.children[c-'a'] == null) temp.children[c-'a'] = new TrieNode();
+                temp = temp.children[c-'a'];
+            }
+            temp.isWord = true;
+        }
+    }
+    
+    /** Returns if there is any word in the trie that equals to the given word after modifying exactly one character */
+    public boolean search(String word) {
+        TrieNode temp = root;
+        int len = word.length();
+        for (int i = 0; i < len; i++) {
+            char c = word.charAt(i);
+            for (int j = 0; j < 26; j++) {
+                if ((char)(j+'a') == c || temp.children[j] == null) continue;
+                if (helper(temp.children[j],word,i+1)) return true;
+            }
+            if(temp.children[c-'a'] == null) return false;
+            temp = temp.children[c-'a'];
+        }
+        return false;
+    } 
+    
+    public boolean helper(TrieNode temp, String word, int index) {
+        int len = word.length();
+        for (int i = index; i < len; i++) {
+            char c = word.charAt(i);
+            if (temp.children[c-'a'] == null) return false;
+            temp = temp.children[c-'a'];
+        }
+        return temp.isWord;
+    }
+}
+
+class TrieNode {
+    boolean isWord;
+    TrieNode[] children;
+    public TrieNode(){
+        isWord = false;
+        children = new TrieNode[26];
+    }
+}
