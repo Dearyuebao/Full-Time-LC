@@ -1,0 +1,26 @@
+1. Imagine you are given a real file system, how will you search files? DFS or BFS ?
+The answer depends on the tree structure. If the branching factor (n) and depth (d) are high, 
+then BFS will take up a lot of memory O(width). For DFS, the space complexity is generally the height of the tree - O(d).
+If the depth of tree is not too deep, we could use dfs, else we could use bfs.
+
+2. If the file content is very large (GB level), how will you modify your solution?
+
+core idea: make use of meta data, like file size before really reading large content.
+Two steps:
+1) DFS to map each size to a set of paths that have that size: Map<Integer, Set>
+2) For each size, if there are more than 2 files there, compute hashCode of every file by MD5, 
+if any files with the same size have the same hash, then they are identical files.
+
+3. If you can only read the file by 1kb each time, how will you modify your solution?
+
+read the file 1kb by 1kb, hash 1kb by 1kb, compare 1kb by 1kb
+
+4. What is the time complexity of your modified solution? What is the most time consuming part and memory consuming part of it?
+How to optimize?
+
+hashing part is the most time-consuming and memory consuming.
+optimize: compare the metadata at first
+
+5. How to make sure the duplicated files you find are not false positive?
+
+we need to compare the content chunk by chunk 
