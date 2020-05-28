@@ -1,0 +1,106 @@
+//扫雷游戏 就是dfs 写了一些函数做判断 感觉比较无聊 写着比较麻烦 注意8个方向
+class Solution {
+    boolean[][] visited;
+    public char[][] updateBoard(char[][] board, int[] click) {
+        int m = board.length, n = board[0].length;
+        visited = new boolean[m][n];
+        char[][] newboard = new char[m][n];
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                newboard[i][j] = board[i][j];
+            }
+        }
+        if(board[click[0]][click[1]] == 'M') {
+            newboard[click[0]][click[1]] = 'X';
+            return newboard;
+        }
+        if(noAdj(board, click[0], click[1])) {
+            dfs(newboard, board, click[0], click[1]);
+        } else {
+            newboard[click[0]][click[1]] = (char)(countAdj(board, click[0], click[1]) + '0');
+        }
+        return newboard;
+    }
+    int[][] dir = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
+    public boolean noAdj(char[][] board, int i, int j) {
+        for(int[] d:dir) {
+            int newX = i + d[0];
+            int newY = j + d[1];
+            if(newX >= 0 && newX < board.length && newY >= 0 && newY < board[0].length) {
+                if(board[newX][newY] == 'M') return false;
+            }
+        }
+        return true;
+    }
+    public int countAdj(char[][] board, int i, int j) {
+        int count = 0;
+        for(int[] d:dir) {
+            int newX = i + d[0];
+            int newY = j + d[1];
+            if(newX >= 0 && newX < board.length && newY >= 0 && newY < board[0].length) {
+                if(board[newX][newY] == 'M') count++;
+            }
+        }
+        return count;
+    }
+    int[][] dir4 = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    
+    public void dfs(char[][] newboard, char[][] board, int i, int j) {
+        newboard[i][j] = 'B';
+        visited[i][j] = true;
+        for(int[] d:dir) {
+            int newX = i + d[0];
+            int newY = j + d[1];
+             if(newX >= 0 && newX < board.length && newY >= 0 && newY < board[0].length && visited[newX][newY] == false) {
+             
+                 if(noAdj(board, newX, newY)){
+                     dfs(newboard, board, newX, newY);
+                 } else {
+                     newboard[newX][newY] = (char)(countAdj(board, newX, newY) + '0');
+                 }
+             }
+        } 
+    }
+}
+
+//nature的写法真好
+class Solution {
+    int[][] dir = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    public char[][] updateBoard(char[][] board, int[] click) {
+        int m = board.length, n = board[0].length;
+       int x = click[0], y = click[1];
+        if(board[x][y] == 'M') {
+            board[x][y] = 'X';
+            return board;
+        }
+        int count = countMine(board, x, y);
+        if(board[x][y] == 'E') {//!!这个必须要加 因为recursive时候再次访问 可能这个点已被改过
+            if(count == 0) {
+                board[x][y] = 'B';
+                for(int[] d:dir) {
+                    int newX = x + d[0];
+                    int newY = y + d[1];
+                    if(newX >= 0 && newX < m && newY >= 0 && newY < n) {
+                        updateBoard(board, new int[]{newX, newY});
+                    }
+                }
+            } else {
+                board[x][y] = (char)(count + '0');
+            }
+        }
+        return board;
+    }
+    public int countMine(char[][] board, int x, int y) {
+        int count = 0;
+        for(int[] d:dir) {
+            int newX = x + d[0];
+            int newY = y + d[1];
+            if(newX >= 0 && newX < board.length && newY >= 0 && newY < board[0].length) {
+                if(board[newX][newY] == 'M') count++;
+            }
+        }
+        return count;
+    }
+    
+}
+//我的问题 思路赘余 其实计算周围mine的个数就知道了周围是否有mine 有几个mine 我竟然还写了两个函数
