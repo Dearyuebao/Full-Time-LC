@@ -1,0 +1,15 @@
+//我只想到了BF算法 这个用stack存index 遇到更大的就pop出来while给栈顶元素赋值next
+ //2n if(i < n) push都很机智 
+ //这种题的最优解一般都是只遍历一次 当只看当前值不二次遍历后面的不能得到结果时 考虑可能当前值的结果会从遍历后面的时候得来
+ public int[] nextGreaterElements(int[] nums) {
+        int n = nums.length, next[] = new int[n];
+        Arrays.fill(next, -1);
+        Stack<Integer> stack = new Stack<>(); // index stack
+        for (int i = 0; i < n * 2; i++) {
+            int num = nums[i % n]; 
+            while (!stack.isEmpty() && nums[stack.peek()] < num)
+                next[stack.pop()] = num;
+            if (i < n) stack.push(i);
+        }   
+        return next;
+    }
