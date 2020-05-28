@@ -1,0 +1,23 @@
+https://leetcode.com/problems/split-bst/discuss/159985/Python-DFS-tm
+//我不会做 直接看了答案 其实用recursive的思想不用想很多
+对于每一个点来说 left, right = split(root, v) 分开的两种一个是root <= v,另一个root > v，当前的root一定是其中的一个
+如果当前root.val <= v，他作为小子树的根 他的右子树是root.right为根中<= v的部分  
+将他的右子树进行拆分成一大一小（这就需要recursive）和当前根进行同样的操作
+if root.val <= V: root.right = split(root.right, v).left; return (root, split(root.right, v).right)
+if root.val > V: root.left = split(root.left, v).right; return (split(root.left, v).left, root)
+
+public TreeNode[] splitBST(TreeNode root, int V) {
+        if(root == null) return new TreeNode[]{null, null};
+        if(root.val <= V) {
+            TreeNode[] child = splitBST(root.right, V);
+            root.right = child[0];
+            return new TreeNode[]{root, child[1]};
+        } else {
+            TreeNode[] child = splitBST(root.left, V);
+            root.left = child[1];
+            return new TreeNode[]{child[0], root};
+        }
+    }
+    
+    recursive要focus on one node
+    只需要考虑这个点是大于还是小于 他的左右子树分别是什么 返回值是什么 
