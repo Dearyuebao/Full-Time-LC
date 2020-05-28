@@ -1,0 +1,19 @@
+//自己写的 sliding window
+class Solution {
+    public int longestOnes(int[] A, int K) {
+        int count = 0, max = 0, start = 0, end = 0;
+        while(end < A.length) {
+            if(A[end] != 1) count++;
+            end++;
+            if(count <= K) max = Math.max(max, end - start);//注意不要再+1了！！！
+            else {
+                while(start <= end && A[start] == 1) {
+                    start++;
+                }
+                start++;
+                count--;
+            }
+        }
+        return max;
+    }
+}
