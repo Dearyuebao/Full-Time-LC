@@ -62,3 +62,45 @@ class Solution {
         } 
     }
 }
+
+//nature的写法真好
+class Solution {
+    int[][] dir = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    public char[][] updateBoard(char[][] board, int[] click) {
+        int m = board.length, n = board[0].length;
+       int x = click[0], y = click[1];
+        if(board[x][y] == 'M') {
+            board[x][y] = 'X';
+            return board;
+        }
+        int count = countMine(board, x, y);
+        if(board[x][y] == 'E') {//!!这个必须要加 因为recursive时候再次访问 可能这个点已被改过
+            if(count == 0) {
+                board[x][y] = 'B';
+                for(int[] d:dir) {
+                    int newX = x + d[0];
+                    int newY = y + d[1];
+                    if(newX >= 0 && newX < m && newY >= 0 && newY < n) {
+                        updateBoard(board, new int[]{newX, newY});
+                    }
+                }
+            } else {
+                board[x][y] = (char)(count + '0');
+            }
+        }
+        return board;
+    }
+    public int countMine(char[][] board, int x, int y) {
+        int count = 0;
+        for(int[] d:dir) {
+            int newX = x + d[0];
+            int newY = y + d[1];
+            if(newX >= 0 && newX < board.length && newY >= 0 && newY < board[0].length) {
+                if(board[newX][newY] == 'M') count++;
+            }
+        }
+        return count;
+    }
+    
+}
+//我的问题 思路赘余 其实计算周围mine的个数就知道了周围是否有mine 有几个mine 我竟然还写了两个函数
