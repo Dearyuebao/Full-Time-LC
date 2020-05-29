@@ -1,0 +1,37 @@
+//我自己做要写的很麻烦 
+//直接借鉴 处理遇到】的重复 
+//res里存的一直是当前[]里的 遇到[就把之前的存到resstack里了
+class Solution {
+    public String decodeString(String s) {
+        Stack<Integer> num = new Stack<>();
+        Stack<String> resStack = new Stack<>();//stack里存的是string
+        String res = "";
+        int index = 0;
+        while(index < s.length()) {
+            if(Character.isDigit(s.charAt(index))) {
+                int count = 0;
+                while(Character.isDigit(s.charAt(index))) {
+                    count = count * 10 + (s.charAt(index) - '0');
+                    index++;
+                }
+                num.push(count);
+            } else if(s.charAt(index) == '[') {
+                resStack.push(res);
+                res = "";
+                index++;
+            } else if(s.charAt(index) == ']') {
+                StringBuilder sb = new StringBuilder();
+                sb.append(resStack.pop());
+                int repeatTimes = num.pop();
+                for(int i = 0; i < repeatTimes; i++) {
+                    sb.append(res);
+                }
+                res = sb.toString();
+                index++;
+            } else {
+                res += s.charAt(index++);
+            } 
+        }
+        return res;
+    }
+}
