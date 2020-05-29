@@ -1,0 +1,74 @@
+//我的bfs算法 每个点算一遍 感觉很不好
+class Solution {
+    int[][] dir = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    public void wallsAndGates(int[][] rooms) {
+        if(rooms.length == 0 || rooms[0].length == 0) return;
+        int m = rooms.length, n = rooms[0].length;
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(rooms[i][j] == Integer.MAX_VALUE) {
+                    boolean[][] visited = new boolean[m][n];
+                    Queue<int[]> q = new LinkedList<>();
+                    q.add(new int[]{i, j});
+                    int depth = 0;
+                    boolean reach = false;
+                    while(!q.isEmpty()) {
+                        int size = q.size();
+                        for(int p = 0; p < size; p++) {
+                            int[] curr = q.poll(); 
+                            int x = curr[0], y = curr[1];
+                            visited[x][y] = true;
+                            if(rooms[x][y] == 0) {
+                                reach = true;
+                                q.clear();
+                                break;
+                            }
+                            for(int[] d:dir) {
+                                int newX = x + d[0];
+                                int newY = y + d[1];
+                                if(newX >= 0 && newX < m && newY >= 0 && newY < n) {
+                                    if(rooms[newX][newY] != -1 && visited[newX][newY] == false) {
+                                        q.add(new int[]{newX, newY});
+                                    }
+                                }
+                            }
+                        }
+                        depth++;
+                    }
+                    rooms[i][j] = reach == false? rooms[i][j]:depth - 1;
+                }
+            }
+        }
+    }
+}
+//discussion
+//简直太机智了 把所有gate放到q里 把相邻的INF赋值之后加入q里面 一层一层 像洋葱一样扩展
+//先被改了值得INF不会再次被改了 因为q里面都是从小到大加的 第一次赋值肯定是最小的
+class Solution {
+    int[][] dir = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    public void wallsAndGates(int[][] rooms) {
+        if(rooms.length == 0 || rooms[0].length == 0) return;
+        int m = rooms.length, n = rooms[0].length;
+        Queue<int[]> q = new LinkedList<>();
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(rooms[i][j] == 0) q.add(new int[]{i, j});
+            }
+        }
+        while(!q.isEmpty()) {
+            int[] curr = q.poll();
+            int x = curr[0], y = curr[1];
+            for(int[] d:dir) {
+                int newX = x + d[0];
+                int newY = y + d[1];
+                if(newX >= 0 && newX < m && newY >= 0 && newY < n) {
+                    if(rooms[newX][newY] == Integer.MAX_VALUE) {
+                        rooms[newX][newY] = rooms[x][y] + 1;
+                        q.add(new int[]{newX, newY});
+                    }
+                }
+            }
+        }
+    }
+}
+                                
