@@ -1,0 +1,36 @@
+//heap
+class myHeapNode {
+        int val;
+        int row;
+        int col;
+        public myHeapNode(int val, int row, int col) {
+            this.val = val;
+            this.row = row;
+            this.col = col;
+        }
+}
+class heapComparator implements Comparator<myHeapNode> {
+    public int compare(myHeapNode x, myHeapNode y) {
+        return x.val - y.val;
+    }
+}
+
+class Solution {
+    
+    public int kthSmallest(int[][] matrix, int k) {
+        int m = matrix.length, n = matrix[0].length;
+        PriorityQueue<myHeapNode> pq = new PriorityQueue<>(Math.min(m, k), new heapComparator());
+        for(int i = 0; i < m; i++) {
+            pq.add(new myHeapNode(matrix[i][0], i, 0));
+        }
+        myHeapNode last = pq.peek();
+        while(k-- > 0) {
+            myHeapNode curr = pq.poll();
+            last = curr;
+            if(curr.col + 1 < n) {
+                pq.add(new myHeapNode(matrix[curr.row][curr.col + 1], curr.row, curr.col + 1));
+            } 
+        }
+        return last.val;
+    }
+}
