@@ -1,0 +1,26 @@
+//算是比较难的一道用hashtable就可以解得题
+class Solution {
+    public int minAreaRect(int[][] points) {
+        Map<Integer, List<Integer>> map = new TreeMap<>();//treemap自动排序
+        for(int[] p:points) {
+            map.computeIfAbsent(p[0], z->new ArrayList<>()).add(p[1]);//compute
+        }
+        int area = Integer.MAX_VALUE;
+        Map<Integer, Integer> findRow = new HashMap<>();
+        for(int row:map.keySet()) {
+            List<Integer> col = map.get(row);
+            Collections.sort(col);//行列都是从小到大
+            for(int i = 0; i < col.size(); i++) {
+                for(int j = i + 1; j < col.size(); j++) {
+                    int diff = col.get(i) * 40001 + col.get(j);//保证不重复
+                    if(findRow.containsKey(diff)) {
+                        int curr = (row - findRow.get(diff)) * (col.get(j) - col.get(i));
+                        area = Math.min(area, curr);
+                    } 
+                    findRow.put(diff, row);//因为要找最小面积 直接覆盖
+                }
+            }
+        }
+        return area == Integer.MAX_VALUE?0:area;
+    }
+}
