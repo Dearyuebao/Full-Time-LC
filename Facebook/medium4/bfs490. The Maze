@@ -1,0 +1,35 @@
+//每次加到q里及时更新visited 不要等到poll之后再改visited!!!int[]不能直接比较相等 list<integer>可以 或者逐位比较 
+
+class Solution {
+    int[][] dir = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+    public boolean hasPath(int[][] maze, int[] start, int[] destination) {
+        int m = maze.length, n = maze[0].length;
+        boolean[][] visited = new boolean[m][n];
+        Queue<int[]> q = new LinkedList<>();
+        q.add(start);
+        visited[start[0]][start[1]] = true;
+        if(start[0] == destination[0] && start[1] == destination[1]) return true;
+        while(!q.isEmpty()) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                int[] curr = q.poll();
+                int x = curr[0], y = curr[1];
+                for(int[] d: dir) {
+                    int addx = d[0], addy = d[1];
+                    int newx = x, newy = y;
+                    while(newx >= 0 && newx < m && newy >= 0 && newy < n && maze[newx][newy] == 0) {
+                        newx += addx;
+                        newy += addy;
+                    }
+                    if(visited[newx - addx][newy - addy] == false) {
+                        q.add(new int[]{newx - addx, newy - addy});
+                        visited[newx - addx][newy - addy] = true;
+                        if((newx - addx) == destination[0] && (newy - addy) == destination[1]) return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+   
+}
