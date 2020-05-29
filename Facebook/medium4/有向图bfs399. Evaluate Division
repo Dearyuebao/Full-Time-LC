@@ -1,0 +1,55 @@
+class Solution {
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        Map<String, Map<String, Double>> map = new HashMap<>();
+        for(int i = 0; i < equations.size(); i++) {
+            List<String> equation = equations.get(i);
+            double value = values[i];
+            map.putIfAbsent(equation.get(0), new HashMap<>());
+            map.putIfAbsent(equation.get(1), new HashMap<>());
+            map.get(equation.get(0)).put(equation.get(1), value);//图的正向
+            map.get(equation.get(1)).put(equation.get(0), 1 / value);//图的反向
+        }
+        double[] res = new double[queries.size()];
+        Arrays.fill(res, -1.0);
+        int num = 0;
+        for(List<String> query:queries) {
+            Queue<String> q1 = new LinkedList<>();
+            Queue<Double> q2 = new LinkedList<>();
+            String start = query.get(0), end = query.get(1);
+            Set<String> visited = new HashSet<>();
+            if(!map.containsKey(start) || !map.containsKey(end)) {
+                res[num] = -1.0;
+                num++;
+                continue;
+            }
+            if(start.equals(end)) {
+                res[num] = 1.0;
+                num++;
+                continue;
+            }
+            q1.add(start); q2.add(1.0); visited.add(start);
+            while(!q1.isEmpty()) {
+                int size = q1.size();
+                for(int i = 0; i < size; i++) {
+                    String curr = q1.poll();
+                    Double multi = q2.poll();
+                    if(curr.equals(end)) {
+                        res[num] = multi;
+                        q1.clear();
+                        break;
+                    }
+                    Map<String, Double> currMap = map.get(curr);
+                    for(String each:currMap.keySet()) {
+                        if(!visited.contains(each)) {
+                            q1.add(each);
+                            q2.add(currMap.get(each) * multi);
+                            visited.add(each);
+                        }
+                    }
+                }
+            }
+            num++;
+        }
+        return res;
+    }
+}
