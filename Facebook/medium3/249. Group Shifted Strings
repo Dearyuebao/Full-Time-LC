@@ -1,0 +1,26 @@
+//我的直观做法 但我觉得可以了这道题
+class Solution {
+    public List<List<String>> groupStrings(String[] strings) {
+        Map<List<Integer>, List<String>> map = new HashMap<>();
+        for(String s:strings) {
+            List<Integer> list = new ArrayList<>();
+            if(s.length() == 1) list.add(-1);
+            else {
+                for(int i = 0; i < s.length() - 1; i++) {
+                    char first = s.charAt(i);
+                    char second = s.charAt(i + 1);
+                    int diff = second - first;
+                    if(diff < 0) diff += 26;
+                    list.add(diff);
+                }
+            }
+            map.putIfAbsent(list, new ArrayList<>());
+            map.get(list).add(s);
+        }
+        List<List<String>> res = new ArrayList<>();
+        for(List<Integer> key:map.keySet()) {
+            res.add(new ArrayList<>(map.get(key)));
+        }
+        return res;
+    }
+}
