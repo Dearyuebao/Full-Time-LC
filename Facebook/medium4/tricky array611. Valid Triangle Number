@@ -1,0 +1,19 @@
+//判断是不是三角形 a + b > c a + c > b b + c > a
+//但如果知道他们的大小关系之后 a < b < c 只需要判断 a + b > c
+//array总是要先sort 只要不是subset那种需要顺序的 
+class Solution {
+    public int triangleNumber(int[] nums) {
+        Arrays.sort(nums);
+        int count = 0, n = nums.length;
+        for(int i = n - 1; i >= 2; i--) {
+            int l = 0, r = i - 1;
+            while(l < r) {
+                if(nums[l] + nums[r] > nums[i]) {
+                    count += (r - l);//其中间的就全都是了！！！
+                    r--;
+                } else l++;
+            }
+        }
+        return count;
+    }
+}
