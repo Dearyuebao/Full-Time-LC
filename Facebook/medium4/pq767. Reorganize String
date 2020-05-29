@@ -1,0 +1,32 @@
+//策略很重要 先取频率最大的！！！ 并且和上一位不一样 要用pq对频率从大到小排 
+//从pq里取出 频率-1 再放回到pq
+class Solution {
+    public String reorganizeString(String S) {
+        int[] count = new int[26];
+        for(int i = 0; i < S.length(); i++) {
+            count[S.charAt(i) - 'a']++;
+        }
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b)->(b[1] - a[1]));
+        
+        for(int i = 0; i < 26; i++) {
+            if(count[i] != 0) {
+                pq.add(new int[]{i + 'a', count[i]});
+            }
+            if(count[i] > (S.length() + 1)/ 2) return "";、、这一步很重要
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!pq.isEmpty()) {
+            int[] first = pq.poll();
+            if(sb.length() == 0 || first[0] != sb.charAt(sb.length() - 1)) {
+                sb.append((char)first[0]);
+                if(--first[1] > 0) pq.add(first);
+            } else {
+                int[] second = pq.poll();
+                sb.append((char)second[0]);
+                if(--second[1] > 0) pq.add(second);
+                pq.add(first);
+            }
+        }
+        return sb.toString();
+    }
+}
