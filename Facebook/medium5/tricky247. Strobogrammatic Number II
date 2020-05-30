@@ -1,0 +1,35 @@
+class Solution {
+    List<String> res = new ArrayList<>();
+    public List<String> findStrobogrammatic(int n) {
+        helper(new char[n], 0, n - 1);
+        return res;
+    }
+    
+    public void helper(char[] combine, int l, int r) {
+        if(l > r) {
+            res.add(new String(combine));
+            return;
+        } else if(l == r) {
+            combine[l] = '0';
+            res.add(new String(combine));
+            combine[l] = '1';
+            res.add(new String(combine));
+            combine[l] = '8';
+            res.add(new String(combine));
+            return;
+        } 
+        if(l != 0) {
+            combine[l] = '0';
+            combine[r] = '0';
+            helper(combine, l + 1, r - 1);
+        }
+        combine[l] = '1'; combine[r] = '1';
+        helper(combine, l + 1, r - 1);
+        combine[l] = '6'; combine[r] = '9';
+        helper(combine, l + 1, r - 1);
+        combine[l] = '8'; combine[r] = '8';
+        helper(combine, l + 1, r - 1);
+        combine[l] = '9'; combine[r] = '6';
+        helper(combine, l + 1, r - 1);
+    }
+}
