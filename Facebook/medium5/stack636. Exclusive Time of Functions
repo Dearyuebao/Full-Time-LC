@@ -1,0 +1,23 @@
+//我还以为是多线程抢占 cpu，各个 function start 与 end 都随机。原来就是函数的调用栈，求每个函数的时间...
+//分成start end两种情况去看就好了 
+class Solution {
+    public int[] exclusiveTime(int n, List<String> logs) {
+        int[] res = new int[n];
+        Stack<Integer> stack = new Stack<>();
+        int prev = 0;
+        for(String log:logs) {
+            String[] s = log.split("\\:");
+            int idx = Integer.valueOf(s[0]);
+            int time = Integer.valueOf(s[2]);
+            if(s[1].equals("start")) {
+                if(!stack.isEmpty()) res[stack.peek()] += time - prev;
+                prev = time;
+                stack.push(idx);
+            } else {
+                res[stack.pop()] += time - prev + 1;
+                prev = time + 1;
+            }
+        }
+        return res;
+    }
+}
