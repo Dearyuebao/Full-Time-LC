@@ -1,0 +1,45 @@
+//TLE了
+class Solution {
+    public double getProbability(int[] balls) {
+        List<Integer> ball = new ArrayList<>();
+        for(int i = 0; i < balls.length; i++) {
+            int times = balls[i];
+            for(int j = 0; j < times; j++) {
+                ball.add(i + 1);
+            }
+        }
+        Set<List<Integer>> res = new HashSet<>();
+        helper(ball, new boolean[ball.size()], new ArrayList<Integer>(), res);
+        
+        double total = res.size();
+        double count = 0.0;
+        for(List<Integer> list:res) {
+            Set<Integer> first = new HashSet<>();
+            Set<Integer> second = new HashSet<>();
+            for(int i = 0; i < list.size()/2; i++) {
+                first.add(list.get(i));
+                second.add(list.get(i + list.size() / 2));
+            }
+            if(second.size() == first.size()) count++;
+        }
+        
+        return count/total;
+    }
+    public void helper(List<Integer> ball, boolean[] visited, List<Integer> permutation, Set<List<Integer>> res) {
+        if(permutation.size() == ball.size()) {
+            res.add(new ArrayList<Integer>(permutation));
+            return;
+        }
+        for(int i = 0; i < ball.size(); i++) {
+            if(i>0 && ball.get(i)==ball.get(i - 1) && !visited[i-1]){
+                continue;
+            }
+            if(visited[i]) continue;
+            permutation.add(ball.get(i));
+            visited[i] = true;
+            helper(ball, visited, permutation, res);
+            visited[i] = false;
+            permutation.remove(permutation.size() - 1);
+        }
+    }
+}
