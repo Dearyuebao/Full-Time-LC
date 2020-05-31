@@ -1,0 +1,44 @@
+//消消乐 思路清晰点 别把简单问题复杂化
+class Solution {
+    public int[][] candyCrush(int[][] board) {
+        boolean found = true;
+        int m = board.length, n = board[0].length;
+        while(found) {
+            found = false;
+            for(int i = 0; i < m; i++) {
+                for(int j = 0; j < n; j++) {
+                    int val = Math.abs(board[i][j]);
+                    if(val == 0) continue;
+                    if(j < n - 2 && Math.abs(board[i][j + 1]) == val && Math.abs(board[i][j + 2]) == val) {
+                        found = true;
+                        int idx = j;
+                        while(idx < n && Math.abs(board[i][idx]) == val) {
+                            board[i][idx++] = -val;
+                        }
+                    }
+                    if(i < m - 2 && Math.abs(board[i + 1][j]) == val && Math.abs(board[i + 2][j]) == val) {
+                        found = true;
+                        int idx = i;
+                        while(idx < m && Math.abs(board[idx][j]) == val) {
+                            board[idx++][j] = -val;
+                        }
+                    }
+                }
+            }
+            if(found) {
+                for(int i = 0; i < n; i++) {
+                    int idx = m - 1;
+                    for(int j = m - 1; j >= 0; j--) {
+                        if(board[j][i] > 0) {
+                            board[idx--][i] = board[j][i];
+                        }
+                    }
+                    while(idx >= 0) {
+                        board[idx--][i] = 0;
+                    }
+                }
+            }
+        }
+        return board;
+    }
+}
