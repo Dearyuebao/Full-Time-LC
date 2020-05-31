@@ -1,4 +1,5 @@
 //消消乐 思路清晰点 别把简单问题复杂化
+//把需要消除的标记为﹣以及用绝对值来判断很重要
 class Solution {
     public int[][] candyCrush(int[][] board) {
         boolean found = true;
