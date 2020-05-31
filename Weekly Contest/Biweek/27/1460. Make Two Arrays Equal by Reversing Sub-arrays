@@ -1,0 +1,15 @@
+class Solution {
+    public boolean canBeEqual(int[] target, int[] arr) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int a:arr) {
+            map.putIfAbsent(a, 0);
+            map.put(a, map.get(a) + 1);
+        }
+        for(int t:target) {
+            if(!map.containsKey(t)) return false;
+            map.put(t, map.get(t) - 1);
+            if(map.get(t) == 0) map.remove(t);
+        }
+        return map.size() == 0;
+    }
+}
