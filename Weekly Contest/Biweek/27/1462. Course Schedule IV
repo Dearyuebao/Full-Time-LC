@@ -1,0 +1,46 @@
+class Solution {
+    public List<Boolean> checkIfPrerequisite(int n, int[][] prerequisites, int[][] queries) {
+        List<Boolean> res = new ArrayList<>();
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for(int i = 0; i < prerequisites.length; i++) {
+            map.putIfAbsent(prerequisites[i][0], new ArrayList<>());
+            map.get(prerequisites[i][0]).add(prerequisites[i][1]);
+        }
+        
+        
+        Map<Integer, Set<Integer>> map2 = new HashMap<>();
+        for(int key:map.keySet()) {
+            Queue<Integer> q = new LinkedList<>();
+            q.add(key);
+            Set<Integer> nextList = new HashSet<>();
+            while(!q.isEmpty()) {
+                int size = q.size();
+                for(int i = 0; i < size; i++) {
+                    int curr = q.poll();
+                    if(!map.containsKey(curr)) continue;
+                    List<Integer> next = map.get(curr);
+                    for(int each:next) {
+                        if(!nextList.contains(each)) {
+                            nextList.add(each);
+                            q.add(each);
+                        }
+                    }
+                }
+            }
+            map2.put(key, nextList);
+        }
+       
+        
+        for(int[] query:queries) {
+            int start = query[0], end = query[1];
+            if(!map2.containsKey(start)) res.add(false);
+            else if(map2.get(start).contains(end)) res.add(true);
+            else res.add(false);
+        }
+        
+        
+        return res;
+    }
+}
+
+//最后一个题cherry pickup 2没做出来
