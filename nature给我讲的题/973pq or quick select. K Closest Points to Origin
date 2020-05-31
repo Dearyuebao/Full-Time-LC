@@ -1,0 +1,46 @@
+
+class Solution {
+    public int[][] kClosest(int[][] points, int K) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> ((b[0] *b[0] + b[1]* b[1] - a[0] * a[0] - a[1]* a[1])));
+        for(int[] point:points) {
+            pq.add(point);
+            if(pq.size() > K) pq.poll();
+        }
+        int[][] res = new int[K][2];
+        int count = 0;
+        while(!pq.isEmpty()) {
+            int[] curr = pq.poll();
+            res[count++] = curr;
+        }
+        return res;
+    }
+}
+
+//nature solution
+class Solution {
+    public int[][] kClosest(int[][] points, int K) {
+        quickSelect(0, points.length - 1, points, K - 1);
+        return Arrays.copyOf(points, K);
+    }
+    public void quickSelect(int left, int right, int[][] points, int k) {
+        while(left <= right) {
+            int index = left;
+            int pivot = points[right][0] * points[right][0] + points[right][1] * points[right][1];
+            for(int i = left; i < right; i++) {
+                if(points[i][0] * points[i][0] + points[i][1] * points[i][1] <= pivot) {
+                    swap(index, i, points);
+                    index++;
+                }
+            }
+            swap(index, right, points);
+            if(index == k) return;
+            if(index < k) left = index + 1;
+            else right = index - 1;
+        }
+    }
+    public void swap(int i, int j, int[][] points) {
+        int[] tmp = points[i];
+        points[i] = points[j];
+        points[j] = tmp;
+    }
+}
