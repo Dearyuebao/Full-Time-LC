@@ -1,0 +1,60 @@
+//dfs
+class Solution {
+    int res = 0;
+    public int findTargetSumWays(int[] nums, int S) {
+        dfs(nums, 0, 0, S);
+        return res;
+    }
+    
+    public void dfs(int[] nums, int index, int currSum, int target) {
+        if(index == nums.length) {
+            if(currSum == target) res++;
+            return;
+        }
+        dfs(nums, index + 1, currSum + nums[index], target);
+        dfs(nums, index + 1, currSum - nums[index], target);
+        
+    }
+}
+
+//dfs + memo
+public int findTargetSumWays(int[] nums, int S) {
+        int[][] memo = new int[nums.length][2001];
+        for(int[] m:memo) {
+            Arrays.fill(m, Integer.MIN_VALUE);
+        }
+        return dfs(nums, 0, 0, S, memo);
+    }
+    
+    public int dfs(int[] nums, int index, int currSum, int target, int[][] memo) {
+        if(index == nums.length) {
+            if(currSum == target) {
+                return 1;
+            } else return 0;
+        }
+        if(memo[index][currSum + 1000] != Integer.MIN_VALUE) {
+            return memo[index][currSum + 1000];
+        }
+        int left = dfs(nums, index + 1, currSum + nums[index], target, memo);
+        int right = dfs(nums, index + 1, currSum - nums[index], target, memo);
+        memo[index][currSum + 1000] = left + right;
+        return left + right;
+    }
+    //dp
+class Solution {
+    public int findTargetSumWays(int[] nums, int S) {
+        if(S > 1000) return 0;
+        int[][] dp = new int[nums.length][2001];
+        dp[0][1000 + nums[0]] += 1;
+        dp[0][1000 - nums[0]] += 1;
+        for(int i = 1; i < nums.length; i++) {
+            for(int j = 0; j < 2001; j++) {
+                if(dp[i - 1][j] != 0) {
+                    dp[i][j + nums[i]] += dp[i - 1][j];
+                    dp[i][j - nums[i]] += dp[i - 1][j];
+                }
+            }
+        }
+        return dp[nums.length - 1][1000 + S];
+    }
+}
