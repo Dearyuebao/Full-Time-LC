@@ -1,0 +1,60 @@
+//tle dfs
+//subset target problem
+是否有K个subset sum == target那种问题用dfs解得之前
+
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int i:nums) sum += i;
+        if(sum % 2 != 0) return false;
+        int target = sum / 2;
+        return dfs(nums, new int[nums.length], 0, 0, target);
+    }
+    
+    public boolean dfs(int[] nums, int[] visited, int start, int currSum, int target) {
+        if(currSum == target) return true;
+        if(target < currSum) return false;
+        if(start >= nums.length) return false;
+        for(int i = start; i < nums.length; i++) {
+            if(visited[i] == 0) {
+                visited[i] = 1;
+                if(dfs(nums, visited, i + 1, currSum + nums[i], target)) return true;
+                visited[i] = 0;
+            }
+        }
+        return false;
+    }
+}
+
+
+//dfs超时用dp 很像昨天nature给我讲的那道dp +1+1+1+1-1 dp[i][j]到index = i sum = j的个数
+这道题dp[i][j]到index = i sum = j有没有这样的pick up方案 有的话就是true
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int i:nums) sum += i;
+        if(sum % 2 != 0) return false;
+        sum = sum / 2;
+        boolean[][] dp = new boolean[nums.length + 1][sum + 1];
+        for(int i = 0; i < nums.length + 1; i++) {
+            Arrays.fill(dp[i], false);
+        }
+        dp[0][0] = true;
+        for(int i = 1; i < nums.length + 1; i++) {
+            dp[i][0] = true;
+        }
+        for(int i = 1; i < sum + 1; i++) {
+            dp[0][i] = false;
+        }
+        for(int i = 1; i < nums.length + 1; i++) {
+            for(int j = 1; j < sum + 1; j++) {
+                dp[i][j] = dp[i - 1][j];//not pick up the index i
+                if(j >= nums[i - 1]) {
+                    dp[i][j] = (dp[i][j] || dp[i - 1][j - nums[i - 1]]);
+                }
+            }
+        }
+        return dp[nums.length][sum];
+    }
+  
+}
