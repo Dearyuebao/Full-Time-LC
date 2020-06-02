@@ -1,0 +1,33 @@
+class Solution {
+    public boolean possibleBipartition(int N, int[][] dislikes) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        int[] group = new int[N + 1];
+        for(int[] dis:dislikes) {
+            int a = dis[0], b = dis[1];
+            map.putIfAbsent(a, new ArrayList<>());
+            map.putIfAbsent(b, new ArrayList<>());
+            map.get(a).add(b);
+            map.get(b).add(a);
+        }
+        for(int i = 1; i <= N; i++) {
+            if(group[i] == 0) {
+                Queue<Integer> q = new LinkedList<>();
+                q.add(i);
+                group[i] = 1;
+                while(!q.isEmpty()) {
+                    int curr = q.poll();
+                    if(!map.containsKey(curr)) break;
+                    for(int next:map.get(curr)) {
+                        if(group[next] == 0) {
+                            group[next] = group[curr] == 1? 2:1;
+                            q.add(next);
+                        } else {
+                            if(group[next] == group[curr]) return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+}
