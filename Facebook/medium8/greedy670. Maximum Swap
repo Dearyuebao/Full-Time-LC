@@ -1,0 +1,72 @@
+//brute force
+class Solution {
+    public int maximumSwap(int num) {
+        char[] nums = Integer.toString(num).toCharArray();
+        char[] ans = Arrays.copyOf(nums, nums.length);
+        for(int i = 0; i < nums.length; i++) {
+            for(int j = i + 1; j < nums.length; j++) {
+                char tmp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = tmp;
+                for(int k = 0; k < nums.length; k++) {
+                    if(nums[k] != ans[k]) {
+                        if(nums[k] > ans[k]) {
+                            ans = Arrays.copyOf(nums, nums.length);
+                        }
+                        break;
+                    }
+                }
+                nums[j] = nums[i];
+                nums[i] = tmp;
+            }
+        }
+        return Integer.valueOf(new String(ans));
+    }
+}
+
+//class Solution {
+    public int maximumSwap(int num) {
+        char[] nums = Integer.toString(num).toCharArray();
+        int[] last = new int[10];
+        for(int i = 0; i < nums.length; i++) {
+            last[nums[i] - '0'] = i;
+        }
+        
+        for(int i = 0; i < nums.length; i++) {
+            int curr = nums[i] - '0';
+            for(int j = 9; j > curr ; j--) {
+                if(last[j] > i) {
+                    char tmp = nums[i];
+                    nums[i] = nums[last[j]];
+                    nums[last[j]] = tmp;
+                    return Integer.valueOf(new String(nums));
+                }
+            }
+        }
+        return num;
+    }
+}
+
+//或者我这种写法
+class Solution {
+
+       public int maximumSwap(int num) {
+        char[] nums = Integer.toString(num).toCharArray();
+        for(int i = 0; i < nums.length; i++) {
+            int index = i;
+            int max = nums[i];
+            for(int j = nums.length - 1; j > i; j--) {
+                if(nums[j] > max) {
+                    index = j;
+                    max = nums[j];
+                }
+            }
+            char tmp = nums[i];
+            nums[i] = nums[index];
+            nums[index] = tmp;
+            if(index != i) return Integer.valueOf(new String(nums));
+        }
+        return Integer.valueOf(new String(nums));
+    }
+    
+}
