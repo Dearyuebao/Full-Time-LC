@@ -1,0 +1,43 @@
+class ExamRoom {
+
+    int n;
+    TreeSet<Integer> set;
+    public ExamRoom(int N) {
+        this.n = N;
+        set = new TreeSet<>();
+    }
+    
+    public int seat() {
+        int student = 0;
+        if(set.size() > 0) {
+            int dist = set.first();
+            Integer prev = null;
+            for(int i: set) {
+                if(prev != null) {
+                    int d = (i - prev) / 2;
+                    if(d > dist) {
+                        dist = d;
+                        student = prev + d;
+                    }
+                }
+                prev = i;
+            }
+            if(n - 1 - set.last() > dist) {
+                student = n -1;
+            }
+        }
+        set.add(student);
+        return student;
+    }
+    
+    public void leave(int p) {
+        set.remove(p);
+    }
+}
+
+/**
+ * Your ExamRoom object will be instantiated and called as such:
+ * ExamRoom obj = new ExamRoom(N);
+ * int param_1 = obj.seat();
+ * obj.leave(p);
+ */
