@@ -1,0 +1,28 @@
+class Solution {
+    public String addBoldTag(String s, String[] dict) {
+        boolean[] bold = new boolean[s.length()];
+        int end = 0;
+        for(int i = 0; i < s.length(); i++) {
+            for(String d:dict) {
+                if(s.startsWith(d, i)) {
+                    end = Math.max(end, i + d.length());
+                }
+            }
+            bold[i] = end > i?true:false;
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < s.length(); i++) {
+            if(bold[i]) {
+                int start = i;
+                while(i < s.length() && bold[i]) {
+                    i++;
+                }
+                sb.append("<b>" + s.substring(start, i) + "</b>");
+                i--;
+            } else {
+                sb.append(s.charAt(i));
+            }
+        }
+        return sb.toString();
+    }
+}
