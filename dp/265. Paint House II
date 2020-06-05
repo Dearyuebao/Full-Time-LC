@@ -1,0 +1,40 @@
+class Solution {
+    public int minCostII(int[][] costs) {
+        if(costs.length == 0 || costs[0].length == 0) return 0;
+        int m = costs.length, n = costs[0].length;
+        if(n < 2 && costs.length > 1) return 0;
+        if(n == 1) return costs[0][0];
+        int small = Integer.MAX_VALUE, smallIndex = -1, big = Integer.MAX_VALUE, bigIndex =  -1;
+        for(int i = 0; i < n; i++) {
+            if(costs[0][i] < small) {
+                big = small;
+                bigIndex = smallIndex;
+                small = costs[0][i];
+                smallIndex = i;
+            } else if(costs[0][i] < big) {
+                big = costs[0][i];
+                bigIndex = i;
+            }
+        }
+        for(int i = 1; i < m; i++) {
+            int s = Integer.MAX_VALUE, sIndex = -1, b = Integer.MAX_VALUE, bIndex =  -1;
+            for(int j = 0; j < n; j++) {
+                int curr = (j == smallIndex)? costs[i][j] + big:costs[i][j] + small;
+                if(curr < s) {
+                    b = s;
+                    bIndex = sIndex;
+                    s = curr;
+                    sIndex = j;
+                } else if(curr < b) {
+                    b = curr;
+                    bIndex = j;
+                }
+            }
+            small = s;
+            big = b;
+            smallIndex = sIndex;
+            bigIndex = bIndex;
+        }
+        return small;
+    }
+}
