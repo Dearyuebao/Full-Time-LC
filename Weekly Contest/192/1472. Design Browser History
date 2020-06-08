@@ -1,0 +1,40 @@
+class BrowserHistory {
+    String curr;
+    Map<String, String> child;
+    Map<String, String> parent;
+    public BrowserHistory(String homepage) {
+        curr = homepage;
+        child = new HashMap<>();
+        parent = new HashMap<>();
+    }
+    
+    public void visit(String url) {
+        child.put(curr, url);
+        parent.put(url, curr);
+        curr = url;
+    }
+    
+    public String back(int steps) {
+        while(steps > 0 && parent.containsKey(curr)) {
+            steps--;
+            curr = parent.get(curr);
+        }
+        return curr;
+    }
+    
+    public String forward(int steps) {
+        while(steps > 0 && child.containsKey(curr)) {
+            steps--;
+            curr = child.get(curr);
+        }
+        return curr;
+    }
+}
+
+/**
+ * Your BrowserHistory object will be instantiated and called as such:
+ * BrowserHistory obj = new BrowserHistory(homepage);
+ * obj.visit(url);
+ * String param_2 = obj.back(steps);
+ * String param_3 = obj.forward(steps);
+ */
