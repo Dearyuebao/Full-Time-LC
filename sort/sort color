@@ -1,0 +1,22 @@
+//很容易写错 
+class Solution {
+    public void sortColors(int[] nums) {
+        int i = 0, j = nums.length - 1;
+        for(int p = i; p <= j;) {//每次p不是自动加
+            if(nums[p] == 0) {
+                swap(nums, i, p);
+                i++;
+                p++;//因为i换过来的不可能是2了 因为p已经经历过i了 如果是2早就和j换了
+            } else if(nums[p] == 2) {
+                swap(nums, j, p);
+                j--;
+            } else p++;
+        }
+    }
+    public void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+}
+
