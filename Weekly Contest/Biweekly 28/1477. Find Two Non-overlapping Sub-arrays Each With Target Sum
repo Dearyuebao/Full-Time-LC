@@ -1,0 +1,40 @@
+//curmmulative sum + dp
+
+class Solution {
+    public int minSumOfLengths(int[] arr, int target) {
+        //curSum: count cummulative sum, map: key is curSum, value is index, count: min length sum to target
+        int[] count = new int[arr.length];
+        Arrays.fill(count, Integer.MAX_VALUE);
+        Map<Integer, Integer> map = new HashMap<>();
+        int sum = 0;
+        int[] curSum = new int[arr.length];
+        for(int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+            curSum[i] = sum;
+            map.put(sum, i);
+        }
+        for(int i = 0; i < arr.length; i++) {
+            int key = curSum[i] - arr[i] + target;
+            if(map.containsKey(key)) {
+                count[i] = map.get(key) - i + 1;
+            }
+        }
+        //dp[i]: shorted length (sum to target) after index i
+        //dp[i] = min(count[i], dp[i + 1]); init: dp[arr.length - 1] = count[arr.length - 1]
+        //min: count[i] + dp[i + count[i]]
+        int[] dp = new int[arr.length];
+        dp[arr.length - 1] = count[arr.length - 1];
+        for(int i = arr.length - 2; i >= 0; i--) {
+            dp[i] = Math.min(count[i], dp[i + 1]);
+        }
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i < arr.length; i++) {
+            if(count[i] != Integer.MAX_VALUE && i + count[i] < arr.length && dp[i + count[i]] != Integer.MAX_VALUE) {
+                min = Math.min(min, dp[i + count[i]] + count[i]);
+            }
+        }
+        return min == Integer.MAX_VALUE? -1: min;
+        
+    }
+    
+}
