@@ -1,0 +1,38 @@
+class Solution {
+    public int minDistance(int[] houses, int k) {
+        int[][][] dp = new int[houses.length][houses.length][k + 1];
+        //dp[i][j][k]: the min distance of assigning k mails between i and j
+        //dp[i][j][k] = min(dp[i][p][k - 1] + dp[p + 1][j][1], p i -> j - 1)
+        //init: dp[i][j][1] = getMin(houses, i, j);
+        //return dp[i][j][k]
+        Arrays.sort(houses);
+        for(int i = 0; i < houses.length; i++) {
+            for(int j = 0; j < houses.length; j++) {
+                Arrays.fill(dp[i][j], 1000000);
+            }
+        }
+        for(int i = 0; i < houses.length; i++) {
+            for(int j = i; j < houses.length; j++) {
+                dp[i][j][1] = getMin(houses, i, j);
+            }
+        }
+        
+        for(int i = 0; i < houses.length; i++) {
+            for(int j = i; j < houses.length; j++) {
+                for(int m = 2; m <= k; m++) {
+                    for(int p = i; p <= j - 1; p++) {
+                        dp[i][j][m] = Math.min(dp[i][j][m], dp[i][p][m - 1] + dp[p + 1][j][1]);
+                    }
+                }
+            }
+        }
+        return dp[0][houses.length - 1][k];
+    }
+    public int getMin(int[] houses, int left, int right) {
+        int dist = 0;
+        for(int i = 0; left + i <= right - i; i++) {
+            dist += (houses[right - i] - houses[left + i]);
+        }
+        return dist;
+    }
+}
