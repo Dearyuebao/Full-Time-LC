@@ -1,0 +1,22 @@
+class Solution {
+    public String getPermutation(int n, int k) {
+        StringBuilder sb = new StringBuilder();
+        k = k - 1;
+        List<Integer> notUsed = new ArrayList<>();
+        int fact = 1;
+        for(int i = 1; i <= n; i++) {
+            fact *= i;
+            notUsed.add(i);
+        }
+        fact /= n;
+        while(n > 0) {
+            int index = k / fact;
+            sb.append(notUsed.remove(index));
+            k = k % fact;
+            n--;
+            if(n != 0) fact /= n;
+        }
+        return sb.toString();
+    }
+}
+
