@@ -1,0 +1,20 @@
+6. Performance of ArrayList vs. LinkedList
+
+The time complexity comparison is as follows:
+arraylist-vs-linkedlist-complexity
+
+ArrayList:
+add O(1)
+get O(1)
+remove O(n)
+
+LinkedList:
+add O(1)
+get O(n)
+remove O(n)
+
+* add() in the table refers to add(E e), and remove() refers to remove(int index)
+
+ArrayList has O(n) time complexity for arbitrary indices of add/remove, but O(1) for the operation at the end of the list.
+LinkedList has O(n) time complexity for arbitrary indices of add/remove, but O(1) for operations at end/beginning of the List.
+ 
