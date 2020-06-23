@@ -1,0 +1,9 @@
+addFirst
+removeFirst
+pollFirst
+相当于stack操作
+
+addLast
+removeLast
+pollLast
+相当于queue操作
