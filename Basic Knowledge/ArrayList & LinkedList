@@ -17,4 +17,7 @@ remove O(n)
 
 ArrayList has O(n) time complexity for arbitrary indices of add/remove, but O(1) for the operation at the end of the list.
 LinkedList has O(n) time complexity for arbitrary indices of add/remove, but O(1) for operations at end/beginning of the List.
+
+List<Integer> list = new ArrayList<>(); 
+代码规范问题 等号左边是interface 右边是具体实现
  
